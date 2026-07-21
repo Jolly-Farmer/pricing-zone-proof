@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2027 Pricing Zone Proof</title>
+<style>
+  :root {
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --card2: #f7f7fa;
+    --text: #1c1c1e;
+    --text-secondary: #8a8a8e;
+    --separator: rgba(60, 60, 67, 0.12);
+    --pass: #04bb84;
+    --fail: #ff2a3b;
+    --warn: #ffc940;
+    --na: #c7c7cc;
+    --accent: #0894ff;
+    --fail-soft: rgba(255, 42, 59, 0.08);
+    --warn-soft: rgba(255, 201, 64, 0.14);
+    --pass-soft: rgba(4, 187, 132, 0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #000000;
+      --card: #1c1c1e;
+      --card2: #242426;
+      --text: #ffffff;
+      --text-secondary: #98989e;
+      --separator: rgba(84, 84, 88, 0.6);
+      --na: #48484a;
+      --fail-soft: rgba(255, 42, 59, 0.12);
+      --warn-soft: rgba(255, 201, 64, 0.12);
+      --pass-soft: rgba(4, 187, 132, 0.12);
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 40px 24px 80px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; }
+
+  h1 { font-size: clamp(24px, 4vw, 34px); font-weight: 800; letter-spacing: -0.5px; }
+  .subtitle { color: var(--text-secondary); font-size: clamp(12px, 1.8vw, 15px); margin-top: 4px; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 22px 0; }
+  .stat {
+    background: var(--card); border-radius: 16px; padding: 16px 18px;
+    border: 1px solid var(--separator);
+  }
+  .stat .num { font-size: clamp(22px, 3vw, 30px); font-weight: 800; letter-spacing: -0.5px; }
+  .stat .lbl { font-size: clamp(10px, 1.4vw, 12px); color: var(--text-secondary); font-weight: 600; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .stat.pass .num { color: var(--pass); }
+  .stat.fail .num { color: var(--fail); }
+  .stat.warn .num { color: #cc9900; }
+  @media (prefers-color-scheme: dark) { .stat.warn .num { color: var(--warn); } }
+
+  .card {
+    background: var(--card); border-radius: 18px; border: 1px solid var(--separator);
+    padding: 0; overflow: hidden; margin-bottom: 22px; position: relative;
+  }
+  .card-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    padding: 15px 20px; border-bottom: 1px solid var(--separator);
+  }
+  .card-head h2 { font-size: clamp(14px, 2vw, 17px); font-weight: 700; }
+  .badge {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+    padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+  }
+  .badge.pass { background: var(--pass-soft); color: var(--pass); }
+  .badge.fail { background: var(--fail-soft); color: var(--fail); }
+  .badge.warn { background: var(--warn-soft); color: #b8860b; }
+  @media (prefers-color-scheme: dark) { .badge.warn { color: var(--warn); } }
+
+  /* ===== Matrix ===== */
+  .matrix-scroll { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 0; }
+  thead th {
+    padding: 14px 4px 12px; font-size: clamp(9px, 1.3vw, 11px); font-weight: 600;
+    color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px;
+    vertical-align: bottom; line-height: 1.4;
+  }
+  thead th.check-col { text-align: left; padding-left: 20px; width: 230px; min-width: 170px; }
+  .zone-label { display: block; font-size: clamp(15px, 2.6vw, 24px); font-weight: 800; color: var(--text); line-height: 1.1; letter-spacing: -0.5px; }
+  .zone-region { display: block; font-size: 8.5px; color: var(--text-secondary); margin-top: 2px; letter-spacing: 0.5px; }
+  tbody tr { border-top: 1px solid var(--separator); }
+  .check-cell {
+    padding: 12px 10px 12px 20px; font-size: clamp(12px, 1.7vw, 14px); font-weight: 550; line-height: 1.3;
+  }
+  .check-cell .sub { display: block; font-size: 11px; color: var(--text-secondary); font-weight: 500; margin-top: 2px; }
+  td.dot-cell { text-align: center; vertical-align: middle; min-width: 34px; }
+  .dot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 21px; height: 21px; border-radius: 50%;
+    font-size: 12px; font-weight: 800; color: #fff; line-height: 1;
+  }
+  .dot.pass { background: var(--pass); }
+  .dot.fail { background: var(--fail); }
+  .dot.warn { background: var(--warn); color: rgba(0,0,0,0.75); }
+  .dot.na { background: transparent; border: 2px solid var(--na); color: var(--na); font-size: 10px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; padding: 12px 20px; border-top: 1px solid var(--separator); background: var(--card2); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+  .legend .dot { width: 15px; height: 15px; font-size: 9px; }
+
+  /* ===== Fix cards ===== */
+  .fixes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 22px; }
+  .fix {
+    border-radius: 16px; padding: 16px 18px; border: 1px solid var(--separator);
+    background: var(--card); border-left: 4px solid var(--fail);
+  }
+  .fix.warnfix { border-left-color: var(--warn); }
+  .fix h3 { font-size: 14px; font-weight: 750; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .fix .zonetag {
+    font-size: 11px; font-weight: 800; background: var(--fail-soft); color: var(--fail);
+    padding: 2px 8px; border-radius: 999px;
+  }
+  .fix.warnfix .zonetag { background: var(--warn-soft); color: #b8860b; }
+  @media (prefers-color-scheme: dark) { .fix.warnfix .zonetag { color: var(--warn); } }
+  .fix p { font-size: 13px; line-height: 1.5; color: var(--text-secondary); }
+  .fix .vals { margin-top: 8px; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .fix .vals b { font-weight: 700; }
+  .fix .vals .exp { color: var(--pass); font-weight: 700; }
+  .fix .vals .got { color: var(--fail); font-weight: 700; }
+
+  /* ===== Review controls ===== */
+  .review-bar {
+    display: flex; gap: 6px; margin-top: 12px; padding-top: 12px;
+    border-top: 1px solid var(--separator); align-items: center;
+  }
+  .review-btn {
+    font: inherit; font-size: 12px; font-weight: 700; letter-spacing: 0.2px;
+    padding: 5px 12px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--separator); background: transparent; color: var(--text-secondary);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .review-btn:hover { border-color: var(--text-secondary); }
+  .review-btn.needsfix.on { background: var(--fail-soft); color: var(--fail); border-color: var(--fail); }
+  .review-btn.okasis.on { background: var(--pass-soft); color: var(--pass); border-color: var(--pass); }
+  .fix.reviewed-ok { opacity: 0.55; border-left-color: var(--pass); }
+  .fix.reviewed-fix { border-left-color: var(--fail); }
+  .fix.reviewed-ok .zonetag { background: var(--pass-soft); color: var(--pass); }
+  .section-count {
+    font-size: 12px; font-weight: 700; color: var(--text-secondary);
+    background: var(--card); border: 1px solid var(--separator);
+    padding: 3px 10px; border-radius: 999px; margin-left: 10px;
+    vertical-align: 2px; letter-spacing: 0.3px;
+  }
+  .section-count.done { background: var(--pass-soft); color: var(--pass); border-color: transparent; }
+
+  /* ===== Data tables ===== */
+  .data-table td, .data-table th { padding: 10px 14px; font-size: clamp(11px, 1.6vw, 13px); }
+  .data-table thead th { text-align: left; padding-bottom: 10px; }
+  .data-table tbody td { border-top: 1px solid var(--separator); font-variant-numeric: tabular-nums; }
+  .data-table td:first-child, .data-table th:first-child { padding-left: 20px; font-weight: 700; }
+  .data-table tr.bad td { background: var(--fail-soft); }
+  .data-table tr.watch td { background: var(--warn-soft); }
+  .data-table .fail-txt { color: var(--fail); font-weight: 700; }
+  .data-table .pass-txt { color: var(--pass); font-weight: 650; }
+  .data-table .warn-txt { color: #b8860b; font-weight: 650; }
+  @media (prefers-color-scheme: dark) { .data-table .warn-txt { color: var(--warn); } }
+
+  h2.section { font-size: clamp(16px, 2.4vw, 20px); font-weight: 800; margin: 30px 0 14px; letter-spacing: -0.3px; }
+
+  footer { margin-top: 30px; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
+
+  @media (max-width: 620px) {
+    body { padding: 20px 10px 60px; }
+    thead th.check-col { width: 130px; min-width: 110px; }
+    .check-cell { padding-left: 12px; }
+    .zone-region { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>2027 Pricing Zone Proof</h1>
+    <p class="subtitle">Finished PDFs (R2) vs X3 ArtRoom export R3 &middot; Samuel tag pricing &middot; ws 2027 freight sheet &middot; proofed by chunk ends, not line-by-line</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat pass"><div class="num">10/10</div><div class="lbl">Zone IDs correct</div></div>
+    <div class="stat pass"><div class="num">10/10</div><div class="lbl">Combos first &amp; last</div></div>
+    <div class="stat pass"><div class="num">10/10</div><div class="lbl">Annuals + Perennials</div></div>
+    <div class="stat pass"><div class="num">10/10</div><div class="lbl">Tag pricing</div></div>
+    <div class="stat fail"><div class="num">5</div><div class="lbl">Freight fails</div></div>
+    <div class="stat fail"><div class="num">3</div><div class="lbl">Data errors</div></div>
+    <div class="stat warn"><div class="num">10</div><div class="lbl">To confirm</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Checks by zone</h2>
+      <span class="badge fail">5 FAILS</span>
+    </div>
+    <div class="matrix-scroll">
+      <table id="matrix">
+        <thead><tr id="matrixHead"></tr></thead>
+        <tbody id="matrixBody"></tbody>
+      </table>
+    </div>
+    <div class="legend">
+      <span><span class="dot pass">&#10003;</span> Pass</span>
+      <span><span class="dot fail">&#10005;</span> Fail — needs edit</span>
+      <span><span class="dot warn">!</span> Confirm manually</span>
+      <span><span class="dot na">&ndash;</span> Not applicable</span>
+    </div>
+  </div>
+
+  <h2 class="section">Edits needed <span class="section-count" data-count-for="edits"></span></h2>
+  <div class="fixes" data-review-group="edits">
+    <div class="fix">
+      <h3><span class="zonetag">ZONES C&middot;D&middot;E</span> Freight boxes are empty</h3>
+      <p>The Small Shipments pricing boxes on the Shipping Information page have no dollar amounts. Fill from ws 2027:</p>
+      <div class="vals">
+        C &nbsp;<span class="exp">$72 / $37 / $18</span> &nbsp;(1 / 2 / 3 boxes)<br>
+        D &nbsp;<span class="exp">$79 / $33 / $22</span><br>
+        E &nbsp;<span class="exp">$120 / $90 / $50</span>
+      </div>
+    </div>
+    <div class="fix">
+      <h3><span class="zonetag">ZONE 5</span> Rack minimum wrong</h3>
+      <p>Racked-order discount block doesn't match the freight sheet.</p>
+      <div class="vals">
+        PDF says <span class="got">2 racks</span> &nbsp;&rarr;&nbsp; should be <span class="exp">3 racks</span><br>
+        Box charges ($31/$21/$13) are correct.
+      </div>
+    </div>
+    <div class="fix">
+      <h3><span class="zonetag">ZONE 6</span> Rack minimum wrong</h3>
+      <p>Looks swapped with Zone 5.</p>
+      <div class="vals">
+        PDF says <span class="got">3 racks</span> &nbsp;&rarr;&nbsp; should be <span class="exp">2 racks</span><br>
+        Box charges ($49/$31/$21) are correct.
+      </div>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ZONES 4&middot;5&middot;6</span> 12&quot; Bowl repeats $69.98</h3>
+      <p>Combo accessories should repeat last year's pricing. The 12&quot; Bowl shows the same $69.98 on zones 4, 5 and 6 while every other accessory steps up by zone &mdash; confirm against last year before signing off.</p>
+    </div>
+  </div>
+
+  <h2 class="section">Source data review (Excel R3) <span class="section-count" data-count-for="data"></span></h2>
+  <div class="fixes" data-review-group="data">
+    <div class="fix">
+      <h3><span class="zonetag">ALL ZONES</span> Erysimum Brightside Magenta Glow = $0.10</h3>
+      <p>Perennials, 51-strip. Priced at <b>$0.100</b> while its sibling Brightside Orange is <b>$0.943</b> and the average 51-strip perennial is ~$0.92. It's also the only item in the file where levels flatten (L3=L4=L5) and its Zone&nbsp;E/Zone&nbsp;2 ratio is 7.8&times; (everything else averages 2.2&times;). Almost certainly a decimal slip &mdash; likely should be ~$0.95&ndash;$1.00.</p>
+    </div>
+    <div class="fix">
+      <h3><span class="zonetag">ALL ZONES</span> 256-tray pricing is below the size curve &mdash; all 331 items</h3>
+      <p>Every single item sold in both 256 and 288 trays charges <b>less per plant for the 256 than the 288</b> (e.g. Ageratum Kona: 144&nbsp;=&nbsp;$0.340, 256&nbsp;=&nbsp;<b>$0.127</b>, 288&nbsp;=&nbsp;$0.187, 512&nbsp;=&nbsp;$0.103). Bigger plugs should cost more per plant, and 288s match their normal curve &mdash; only the 256 column is off, sitting just ~17% above 512 bulk pricing. A full 256 tray averages <b>$34.6</b> vs $50.1 (144) / $54.5 (288) / $60.4 (512). Affects 251 Annuals, 76 Vegetables, 4 Herbs, in every zone and in the printed PDFs. Confirm the 256 rate basis with Samuel.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ZONE 3</span> Cheaper than Zone 2 across the board</h3>
+      <p>96.5% of all items (and 120/120 combo kits) are ~0.8% <b>cheaper in Zone 3 than Zone 2</b>, so the ladder runs 3 &lt; 2 &lt; 4 &lt; 5 &lt; 6. It's too consistent to be a typo &mdash; but confirm the zone rate table is intentional, since the freight sheet charges Zone 3 more per box than Zone 2.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ALL ZONES</span> EOD averages 9.1%, catalog says 10%</h3>
+      <p>The Early Order Discount actually baked into the numbers is <b>8.4&ndash;10%, averaging 9.1%</b> in every zone. The Discounts page promises "billed at 10% off the regular price." If EOD rows are derived from an unrounded base this may be fine &mdash; but worth confirming the math is what Samuel intends.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ALL ZONES</span> Discounts-page sample table shows Zone E prices</h3>
+      <p>The miniature example price list on the Discounts Explained page (Ageratum Kona $0.900&hellip;) is <b>identical in all 10 PDFs and uses Zone E numbers</b> &mdash; the page's hidden slug even says "Changes between every zone." A US Zone 2 grower reading the example sees prices 2.6&times; their real ones. Confirm whether the sample is meant to be zone-live or generic.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ALL ZONES</span> Cilantro &amp; Cosmos Sensation escalate like no other item</h3>
+      <p>Cilantro (144) and Cosmos Sensation (144) climb <b>+50% from Zone 2&rarr;6</b> (file average +22%) and <b>+59% on the D&rarr;E step alone</b> (average +31%). Zone E ends at 3.3&times; the Zone 2 price vs 2.2&times; for everything else. They're the only two items on their own rate curve besides the Erysimum error &mdash; worth a look.</p>
+    </div>
+  </div>
+
+  <h2 class="section">Erysimum-class suspects (single-item anomalies) <span class="section-count" data-count-for="suspects"></span></h2>
+  <div class="fixes" data-review-group="suspects">
+    <div class="fix">
+      <h3><span class="zonetag">ALL ZONES</span> Lobelia Premium Masterpiece &mdash; 26-strip is 2.3&times; off its own curve</h3>
+      <p>Masterpiece Blue with Eye: 144&nbsp;=&nbsp;$0.435, 288&nbsp;=&nbsp;$0.259, but 26-strip&nbsp;=&nbsp;<b>$1.967</b>. Across 379 items the 26/144 ratio medians <b>1.93</b> (next-highest is 2.45); this one is <b>4.52</b> &mdash; totally isolated. The 144 &amp; 288 agree with each other, so either the 26 should be ~<b>$0.84</b>, or the 144/288 should be ~$1.02/$0.62. The 26-strip is also a much newer item number (G037412 vs G004202) &mdash; priced separately when it was added.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ALL ZONES</span> Cymbopogon Lemon Grass &mdash; 288 is ~50% above its curve</h3>
+      <p>26&nbsp;=&nbsp;$0.985, 144&nbsp;=&nbsp;$0.571, 288&nbsp;=&nbsp;<b>$0.414</b>. Both independent ratios say the 288 should be ~$0.21&ndash;$0.28: its 144/288 ratio is 1.38 vs 2.04 median, 26/288 is 2.38 vs 4.60 median. Buying 288s only saves 27% per plant vs 144s when the norm is ~50%. (Fennel Dragon 288&nbsp;=&nbsp;$0.217 shows the same pattern, milder.)</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ALL ZONES</span> Pepper Jalapeno &mdash; M vs La Bomba II inconsistent by size</h3>
+      <p>At 144, M ($0.411) is only 11% cheaper than La Bomba II ($0.463). But at 256/288/512 the gap balloons to 29&ndash;44% (e.g. 512: $0.127 vs $0.228). La Bomba II's bulk trays sit well above the normal size curve (512/144&nbsp;=&nbsp;0.49 vs 0.34 typical) while M is normal &mdash; one of the two ladders doesn't follow the house curve.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ALL ZONES</span> Tomato Empress &mdash; priciest veg, flattest curve</h3>
+      <p>26-strip at <b>$2.67</b> (next tomato is ~$1.03) with the shallowest volume curve in Vegetables (L5/L1&nbsp;=&nbsp;0.87 vs 0.75 median). High price + flat levels is the same signature the Erysimum error has. If Empress really is a premium grafted line this is fine &mdash; but it's worth one look.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ALL ZONES</span> Two liners ~35% above the 51-strip curve</h3>
+      <p>Cuphea Cupheasy Lavender <b>"2024"</b> (51&nbsp;=&nbsp;$0.877 vs 144&nbsp;=&nbsp;$0.529) and Evolvulus Hawaiian Blue Eyes (51&nbsp;=&nbsp;$0.826 vs 144&nbsp;=&nbsp;$0.52) have 51/144 ratios of 1.66/1.59 where the median is 1.21 &mdash; their 51-strips are ~35% above where the curve predicts. The "2024" in the Cuphea name in a 2027 catalog also looks like a stale carry-over.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Data checks that passed</h2>
+      <span class="badge pass">CLEAN</span>
+    </div>
+    <table class="data-table">
+      <thead><tr><th>Check</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Volume levels descend (L1 &ge; L2 &ge; &hellip; &ge; L5)</td><td class="pass-txt">PASS &mdash; 0 violations in 17,860 rows</td></tr>
+        <tr><td>EOD row present for every item</td><td class="pass-txt">PASS &mdash; no missing EOD rows</td></tr>
+        <tr><td>Same items in all 10 zones</td><td class="pass-txt">PASS &mdash; 1,786 items, none missing</td></tr>
+        <tr><td>No duplicate item+size rows</td><td class="pass-txt">PASS</td></tr>
+        <tr><td>Raw SQL rows vs ArtRoom sheets (all 10 zones)</td><td class="pass-txt">PASS &mdash; every summarized ArtRoom price matches its source varieties; 0 conflicts inside "OK to Summarize" groups</td></tr>
+        <tr><td>CK ArtRoom vs COMBOKITDATA</td><td class="pass-txt">PASS &mdash; 1,200 combo rows identical</td></tr>
+        <tr><td>Size ladder within items (26 &rarr; 51 &rarr; 144 &rarr; 288 &rarr; 512)</td><td class="pass-txt">PASS everywhere except the 256 column (see above)</td></tr>
+        <tr><td>CAD/USD zone ratio (A vs 2)</td><td class="pass-txt">PASS &mdash; 1.343 &plusmn; 0.01 on every item except Erysimum &amp; Cosmos flagged above</td></tr>
+        <tr><td>Zone ladder 4 &lt; 5 &lt; 6 and A &lt; B &lt; C &lt; D &lt; E</td><td class="pass-txt">PASS &mdash; only the Zone 2/3 flip above</td></tr>
+        <tr><td>No zeros, negatives, or flat L1=L5 pricing</td><td class="pass-txt">PASS</td></tr>
+        <tr><td>High-end outliers reviewed</td><td class="pass-txt">Plausible premium items &mdash; Colocasia Redemption $5.22, Delphinium Red Lark $4.47, Philodendron Green Congo $4.23, Alstroemeria Inca $3.55, Tomato Empress $2.67 (all 26-strip)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section">Freight vs ws 2027.pdf</h2>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Zone</th><th>1 box</th><th>2 boxes</th><th>3 boxes</th><th>Boxes</th><th>Rack discounts</th></tr></thead>
+      <tbody>
+        <tr><td>2</td><td>$16</td><td>$10</td><td>$7</td><td class="pass-txt">PASS</td><td class="pass-txt">PASS &mdash; 1 rack &middot; $100 / $110</td></tr>
+        <tr><td>3</td><td>$17</td><td>$8</td><td>$4</td><td class="pass-txt">PASS</td><td class="pass-txt">PASS &mdash; 2 racks &middot; $100</td></tr>
+        <tr><td>4</td><td>$21</td><td>$12</td><td>$7</td><td class="pass-txt">PASS</td><td class="pass-txt">PASS &mdash; 2 racks &middot; $100</td></tr>
+        <tr class="bad"><td>5</td><td>$31</td><td>$21</td><td>$13</td><td class="pass-txt">PASS</td><td class="fail-txt">FAIL &mdash; PDF 2 racks, ref 3</td></tr>
+        <tr class="bad"><td>6</td><td>$49</td><td>$31</td><td>$21</td><td class="pass-txt">PASS</td><td class="fail-txt">FAIL &mdash; PDF 3 racks, ref 2</td></tr>
+        <tr><td>A</td><td>$26</td><td>$21</td><td>$8</td><td class="pass-txt">PASS</td><td>N/A &mdash; no truck discounts</td></tr>
+        <tr><td>B</td><td>$36</td><td>$34</td><td>$9</td><td class="pass-txt">PASS</td><td class="pass-txt">PASS &mdash; 3 racks &middot; $200 + $100</td></tr>
+        <tr class="bad"><td>C</td><td colspan="3"><i>empty &mdash; expected $72 / $37 / $18</i></td><td class="fail-txt">FAIL</td><td class="fail-txt">FAIL &mdash; missing</td></tr>
+        <tr class="bad"><td>D</td><td colspan="3"><i>empty &mdash; expected $79 / $33 / $22</i></td><td class="fail-txt">FAIL</td><td class="fail-txt">FAIL &mdash; missing</td></tr>
+        <tr class="bad"><td>E</td><td colspan="3"><i>empty &mdash; expected $120 / $90 / $50</i></td><td class="fail-txt">FAIL</td><td class="fail-txt">FAIL &mdash; missing</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section">Combo accessories by zone</h2>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Zone</th><th>10.2&quot; Pot</th><th>12&quot; Bowl</th><th>12&quot; Hanger</th><th>13&quot; Planters</th></tr></thead>
+      <tbody>
+        <tr><td>2</td><td>$58.86</td><td>$59.98</td><td>$73.22</td><td>$74.75</td></tr>
+        <tr><td>3</td><td>$60.86</td><td>$64.98</td><td>$75.22</td><td>$76.75</td></tr>
+        <tr class="watch"><td>4</td><td>$63.86</td><td class="warn-txt">$69.98</td><td>$78.22</td><td>$79.75</td></tr>
+        <tr class="watch"><td>5</td><td>$66.86</td><td class="warn-txt">$69.98</td><td>$81.22</td><td>$82.75</td></tr>
+        <tr class="watch"><td>6</td><td>$73.86</td><td class="warn-txt">$69.98</td><td>$88.22</td><td>$89.75</td></tr>
+        <tr><td>A</td><td>$82.07</td><td>$81.97</td><td>$101.32</td><td>$103.37</td></tr>
+        <tr><td>B</td><td>$102.07</td><td>$101.97</td><td>$121.32</td><td>$123.37</td></tr>
+        <tr><td>C</td><td>$122.07</td><td>$121.97</td><td>$141.32</td><td>$143.37</td></tr>
+        <tr><td>D</td><td>$137.07</td><td>$136.97</td><td>$156.32</td><td>$158.37</td></tr>
+        <tr><td>E</td><td>$152.07</td><td>$151.97</td><td>$171.32</td><td>$173.37</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 class="section">Zone 2 &amp; Zone A deep proof</h2>
+  <div class="card">
+    <table class="data-table">
+      <thead><tr><th>Item</th><th>Zone 2</th><th>Zone A</th></tr></thead>
+      <tbody>
+        <tr><td>Cover / TOC</td><td class="pass-txt">PASS &mdash; ZONE 2, US currency</td><td class="pass-txt">PASS &mdash; ZONE A, Canadian currency</td></tr>
+        <tr><td>Discounts Explained</td><td class="pass-txt">PASS &mdash; dates + volume table</td><td class="pass-txt">PASS &mdash; same structure, CAD tag</td></tr>
+        <tr><td>Combo page header</td><td class="pass-txt">PASS &mdash; zone 2</td><td class="pass-txt">PASS &mdash; zone A</td></tr>
+        <tr><td>Regular pricing header</td><td class="pass-txt">PASS &mdash; zone 2</td><td class="pass-txt">PASS &mdash; zone A</td></tr>
+        <tr><td>Terms &amp; Conditions</td><td class="pass-txt">PASS (p25)</td><td class="pass-txt">PASS (p26)</td></tr>
+        <tr><td>Shipping Information</td><td class="pass-txt">PASS &mdash; boxes filled</td><td class="pass-txt">PASS &mdash; $26/$21/$8</td></tr>
+        <tr><td>Truck Delivery Info</td><td class="pass-txt">PASS &mdash; US truck map</td><td class="pass-txt">PASS &mdash; no US map (expected)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    <b>Tag pricing:</b> $0.055 USD on zones 2&ndash;6, $0.075 CAD on zones A&ndash;E &mdash; matches Samuel.<br>
+    <b>Note:</b> discounts/shipping pages still carry invisible white "Live Data Here / USA ONLY" slug text in the PDF text layer &mdash; harmless for print, worth cleaning in the masters eventually.<br>
+    Sources: Proof/Finished PDF (GR1 ZONE *_R2) &middot; X3 Pricing Artroom export Update R3.xlsx &middot; ws 2027.pdf
+  </footer>
+</div>
+
+<script>
+(function () {
+  var ZONES = [
+    { id: "2", region: "US" }, { id: "3", region: "US" }, { id: "4", region: "US" },
+    { id: "5", region: "US" }, { id: "6", region: "US" },
+    { id: "A", region: "CA" }, { id: "B", region: "CA" }, { id: "C", region: "CA" },
+    { id: "D", region: "CA" }, { id: "E", region: "CA" }
+  ];
+  // p=pass f=fail w=confirm n=n/a
+  var CHECKS = [
+    { label: "Correct zone in price list", sub: "cover + page headers", cells: "pppppppppp" },
+    { label: "Combos first & last lines", sub: "24 Karat Gold → Very Valentine", cells: "pppppppppp" },
+    { label: "Annuals first & last lines", sub: "Ageratum Kona → Zinnia Zydeco", cells: "pppppppppp" },
+    { label: "Perennials first & last lines", sub: "Achillea Skysail → Vinca minor", cells: "pppppppppp" },
+    { label: "Tag pricing", sub: "$0.055 US / $0.075 CA", cells: "pppppppppp" },
+    { label: "Accessories prices", sub: "repeat last year — confirm", cells: "wwwwwwwwww" },
+    { label: "Freight: small shipment boxes", sub: "shipping information page", cells: "pppppppfff" },
+    { label: "Freight: rack discounts", sub: "vs ws 2027 sheet", cells: "pppffnpfff" },
+    { label: "Cover / Discounts / T&C / Truck", sub: "deep proof", cells: "pnnnnpnnnn" }
+  ];
+  var MARK = { p: ["pass", "\u2713"], f: ["fail", "\u2715"], w: ["warn", "!"], n: ["na", "\u2013"] };
+
+  var head = document.getElementById("matrixHead");
+  var th = document.createElement("th");
+  th.className = "check-col";
+  th.textContent = "Check";
+  head.appendChild(th);
+  ZONES.forEach(function (z) {
+    var h = document.createElement("th");
+    h.innerHTML = '<span class="zone-label">' + z.id + '</span><span class="zone-region">' + z.region + '</span>';
+    head.appendChild(h);
+  });
+
+  var body = document.getElementById("matrixBody");
+  CHECKS.forEach(function (c) {
+    var tr = document.createElement("tr");
+    var td = document.createElement("td");
+    td.className = "check-cell";
+    td.innerHTML = c.label + '<span class="sub">' + c.sub + '</span>';
+    tr.appendChild(td);
+    c.cells.split("").forEach(function (ch, i) {
+      var cell = document.createElement("td");
+      cell.className = "dot-cell";
+      var m = MARK[ch];
+      cell.innerHTML = '<span class="dot ' + m[0] + '" title="' + c.label + ' — Zone ' + ZONES[i].id + '">' + m[1] + "</span>";
+      tr.appendChild(cell);
+    });
+    body.appendChild(tr);
+  });
+})();
+
+/* ===== Review controls for anomaly cards ===== */
+(function () {
+  var KEY = "proofDashboardReviews.v1";
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+
+  function slug(text) {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
+  }
+
+  var groups = document.querySelectorAll("[data-review-group]");
+  groups.forEach(function (group) {
+    var groupId = group.getAttribute("data-review-group");
+    var cards = group.querySelectorAll(".fix");
+
+    function updateCount() {
+      var badge = document.querySelector('[data-count-for="' + groupId + '"]');
+      if (!badge) return;
+      var done = 0;
+      cards.forEach(function (card) {
+        if (state[card.dataset.reviewId]) done++;
+      });
+      badge.textContent = done + "/" + cards.length + " reviewed";
+      badge.classList.toggle("done", done === cards.length);
+    }
+
+    cards.forEach(function (card) {
+      var id = groupId + ":" + slug(card.querySelector("h3").textContent);
+      card.dataset.reviewId = id;
+
+      var bar = document.createElement("div");
+      bar.className = "review-bar";
+      var btnFix = document.createElement("button");
+      btnFix.className = "review-btn needsfix";
+      btnFix.textContent = "Needs fix";
+      var btnOk = document.createElement("button");
+      btnOk.className = "review-btn okasis";
+      btnOk.textContent = "OK as-is";
+      bar.appendChild(btnFix);
+      bar.appendChild(btnOk);
+      card.appendChild(bar);
+
+      function render() {
+        var v = state[id];
+        btnFix.classList.toggle("on", v === "fix");
+        btnOk.classList.toggle("on", v === "ok");
+        card.classList.toggle("reviewed-fix", v === "fix");
+        card.classList.toggle("reviewed-ok", v === "ok");
+      }
+      function set(v) {
+        if (state[id] === v) { delete state[id]; } else { state[id] = v; }
+        save(); render(); updateCount();
+      }
+      btnFix.addEventListener("click", function () { set("fix"); });
+      btnOk.addEventListener("click", function () { set("ok"); });
+      render();
+    });
+
+    updateCount();
+  });
+})();
+</script>
+</body>
+</html>
