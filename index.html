@@ -116,6 +116,8 @@
     background: var(--card); border-left: 4px solid var(--fail);
   }
   .fix.warnfix { border-left-color: var(--warn); }
+  .fix.okfix { border-left-color: var(--pass); }
+  .fix.okfix .zonetag { background: var(--pass-soft); color: var(--pass); }
   .fix h3 { font-size: 14px; font-weight: 750; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
   .fix .zonetag {
     font-size: 11px; font-weight: 800; background: var(--fail-soft); color: var(--fail);
@@ -192,7 +194,8 @@
     <div class="stat pass"><div class="num">10/10</div><div class="lbl">Tag pricing</div></div>
     <div class="stat fail"><div class="num">5</div><div class="lbl">Freight fails</div></div>
     <div class="stat fail"><div class="num">3</div><div class="lbl">Data errors</div></div>
-    <div class="stat warn"><div class="num">10</div><div class="lbl">To confirm</div></div>
+    <div class="stat warn"><div class="num">7</div><div class="lbl">To confirm</div></div>
+    <div class="stat pass"><div class="num">2</div><div class="lbl">Resolved via 2026</div></div>
   </div>
 
   <div class="card">
@@ -251,19 +254,19 @@
   <div class="fixes" data-review-group="data">
     <div class="fix">
       <h3><span class="zonetag">ALL ZONES</span> Erysimum Brightside Magenta Glow = $0.10</h3>
-      <p>Perennials, 51-strip. Priced at <b>$0.100</b> while its sibling Brightside Orange is <b>$0.943</b> and the average 51-strip perennial is ~$0.92. It's also the only item in the file where levels flatten (L3=L4=L5) and its Zone&nbsp;E/Zone&nbsp;2 ratio is 7.8&times; (everything else averages 2.2&times;). Almost certainly a decimal slip &mdash; likely should be ~$0.95&ndash;$1.00.</p>
+      <p>Perennials, 51-strip. Priced at <b>$0.100</b> while its sibling Brightside Orange is <b>$0.943</b>. <b>Confirmed against 2026: Erysimum 51-strip was $1.020 last year</b> &mdash; the leading "1" got dropped. Should be ~$1.05 with a normal increase. Also the only item where levels flatten (L3=L4=L5).</p>
     </div>
-    <div class="fix">
-      <h3><span class="zonetag">ALL ZONES</span> 256-tray pricing is below the size curve &mdash; all 331 items</h3>
-      <p>Every single item sold in both 256 and 288 trays charges <b>less per plant for the 256 than the 288</b> (e.g. Ageratum Kona: 144&nbsp;=&nbsp;$0.340, 256&nbsp;=&nbsp;<b>$0.127</b>, 288&nbsp;=&nbsp;$0.187, 512&nbsp;=&nbsp;$0.103). Bigger plugs should cost more per plant, and 288s match their normal curve &mdash; only the 256 column is off, sitting just ~17% above 512 bulk pricing. A full 256 tray averages <b>$34.6</b> vs $50.1 (144) / $54.5 (288) / $60.4 (512). Affects 251 Annuals, 76 Vegetables, 4 Herbs, in every zone and in the printed PDFs. Confirm the 256 rate basis with Samuel.</p>
-    </div>
-    <div class="fix warnfix">
-      <h3><span class="zonetag">ZONE 3</span> Cheaper than Zone 2 across the board</h3>
-      <p>96.5% of all items (and 120/120 combo kits) are ~0.8% <b>cheaper in Zone 3 than Zone 2</b>, so the ladder runs 3 &lt; 2 &lt; 4 &lt; 5 &lt; 6. It's too consistent to be a typo &mdash; but confirm the zone rate table is intentional, since the freight sheet charges Zone 3 more per box than Zone 2.</p>
+    <div class="fix okfix">
+      <h3><span class="zonetag">RESOLVED</span> 256-tray pricing near 512 rates &mdash; intentional</h3>
+      <p>The 2026 files call this size <b>"Half-512"</b> &mdash; it's literally half a 512 tray, same small plugs, so it's priced just above 512 per-plant rates. Same basis both years (e.g. Ageratum: 2026 Half-512&nbsp;=&nbsp;$0.120 vs 512&nbsp;=&nbsp;$0.103; 2027 256&nbsp;=&nbsp;$0.127 vs 512&nbsp;=&nbsp;$0.103). Not an error.</p>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> EOD averages 9.1%, catalog says 10%</h3>
-      <p>The Early Order Discount actually baked into the numbers is <b>8.4&ndash;10%, averaging 9.1%</b> in every zone. The Discounts page promises "billed at 10% off the regular price." If EOD rows are derived from an unrounded base this may be fine &mdash; but worth confirming the math is what Samuel intends.</p>
+      <h3><span class="zonetag">ZONE 3</span> Cheaper than Zone 2 &mdash; new this year</h3>
+      <p>96.5% of items (and all 120 combos) are ~0.8% <b>cheaper in Zone 3 than Zone 2</b>. <b>In 2026 this was not the case</b>: Zone 3 averaged +0.5% above Zone 2 with zero cheaper items. The flip is new in 2027 &mdash; confirm the zone rate table is intentional.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ALL ZONES</span> EOD math changed vs 2026 &mdash; wording now overstates it</h3>
+      <p>2027 builds regular price as <b>EOD &times; 1.1</b>, which makes the discount 9.09% off regular. <b>2026 was a true 10%</b> (EOD = regular &times; 0.9, exact across 5,675 rows). The numbers are self-consistent, but the Discounts page still says "billed at 10% off the regular price" &mdash; that was literally true last year and isn't now.</p>
     </div>
     <div class="fix warnfix">
       <h3><span class="zonetag">ALL ZONES</span> Discounts-page sample table shows Zone E prices</h3>
@@ -271,7 +274,15 @@
     </div>
     <div class="fix warnfix">
       <h3><span class="zonetag">ALL ZONES</span> Cilantro &amp; Cosmos Sensation escalate like no other item</h3>
-      <p>Cilantro (144) and Cosmos Sensation (144) climb <b>+50% from Zone 2&rarr;6</b> (file average +22%) and <b>+59% on the D&rarr;E step alone</b> (average +31%). Zone E ends at 3.3&times; the Zone 2 price vs 2.2&times; for everything else. They're the only two items on their own rate curve besides the Erysimum error &mdash; worth a look.</p>
+      <p>Cilantro (144) and Cosmos Sensation (144) climb <b>+50% from Zone 2&rarr;6</b> (file average +22%) and <b>+59% on the D&rarr;E step alone</b> (average +31%). <b>In 2026 both followed the normal curve</b> (Cilantro 288: Z6/Z2&nbsp;=&nbsp;1.21, E/Z2&nbsp;=&nbsp;1.98) &mdash; the steep curve is new in 2027.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="zonetag">ZONE E</span> +19% across the board vs 2026 &mdash; every other zone is &minus;1% to +6%</h3>
+      <p>Zone E items went up a median <b>+19.3%</b> and combos <b>+19.9%</b> year-over-year, while zones 2&ndash;D range from &minus;1.4% (D) to +5.9% (6). The E/D price gap widened from 1.09&times; to <b>1.30&times;</b>. If Newfoundland/remote freight drove a deliberate reprice, fine &mdash; but it's a big, uniform jump worth confirming.</p>
+    </div>
+    <div class="fix">
+      <h3><span class="zonetag">ALL ZONES</span> Aster 288 &amp; 512 jumped +56% / +43% while the 144 went +8%</h3>
+      <p>2026 Aster: 144&nbsp;=&nbsp;$0.274, 288&nbsp;=&nbsp;$0.159, 512&nbsp;=&nbsp;$0.081. 2027 Ball Florist: 144&nbsp;=&nbsp;$0.296 (+8%), 288&nbsp;=&nbsp;<b>$0.248 (+56%)</b>, 512&nbsp;=&nbsp;<b>$0.116 (+43%)</b>. That puts the 288 at 0.84&times; the 144 price per plant when the category norm is 0.57&times; (2026 Aster was a normal 0.58&times;). Matsumoto 288 shows the same pattern. The bulk-size prices look inflated.</p>
     </div>
   </div>
 
@@ -279,24 +290,47 @@
   <div class="fixes" data-review-group="suspects">
     <div class="fix">
       <h3><span class="zonetag">ALL ZONES</span> Lobelia Premium Masterpiece &mdash; 26-strip is 2.3&times; off its own curve</h3>
-      <p>Masterpiece Blue with Eye: 144&nbsp;=&nbsp;$0.435, 288&nbsp;=&nbsp;$0.259, but 26-strip&nbsp;=&nbsp;<b>$1.967</b>. Across 379 items the 26/144 ratio medians <b>1.93</b> (next-highest is 2.45); this one is <b>4.52</b> &mdash; totally isolated. The 144 &amp; 288 agree with each other, so either the 26 should be ~<b>$0.84</b>, or the 144/288 should be ~$1.02/$0.62. The 26-strip is also a much newer item number (G037412 vs G004202) &mdash; priced separately when it was added.</p>
+      <p>Masterpiece Blue with Eye: 144&nbsp;=&nbsp;$0.435, 288&nbsp;=&nbsp;$0.259, but 26-strip&nbsp;=&nbsp;<b>$1.967</b>. Across 379 items the 26/144 ratio medians <b>1.93</b> (next-highest is 2.45); this one is <b>4.52</b>. The 144 &amp; 288 track 2026 normally (+4% / +9%), but <b>the 26-strip didn't exist in 2026</b> &mdash; it's a newly added size (G037412) and its price doesn't fit the family. Expected ~<b>$0.84</b> if the 144 is right.</p>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> Cymbopogon Lemon Grass &mdash; 288 is ~50% above its curve</h3>
-      <p>26&nbsp;=&nbsp;$0.985, 144&nbsp;=&nbsp;$0.571, 288&nbsp;=&nbsp;<b>$0.414</b>. Both independent ratios say the 288 should be ~$0.21&ndash;$0.28: its 144/288 ratio is 1.38 vs 2.04 median, 26/288 is 2.38 vs 4.60 median. Buying 288s only saves 27% per plant vs 144s when the norm is ~50%. (Fennel Dragon 288&nbsp;=&nbsp;$0.217 shows the same pattern, milder.)</p>
+      <h3><span class="zonetag">ALL ZONES</span> Tomato Empress &mdash; priciest veg, flattest curve (new item)</h3>
+      <p>26-strip at <b>$2.67</b> (next tomato is ~$1.03) with the shallowest volume curve in Vegetables (L5/L1&nbsp;=&nbsp;0.87 vs 0.75 median). Not in the 2026 files, so there's no prior-year anchor &mdash; fine if it's genuinely a premium line, worth one look.</p>
     </div>
-    <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> Pepper Jalapeno &mdash; M vs La Bomba II inconsistent by size</h3>
-      <p>At 144, M ($0.411) is only 11% cheaper than La Bomba II ($0.463). But at 256/288/512 the gap balloons to 29&ndash;44% (e.g. 512: $0.127 vs $0.228). La Bomba II's bulk trays sit well above the normal size curve (512/144&nbsp;=&nbsp;0.49 vs 0.34 typical) while M is normal &mdash; one of the two ladders doesn't follow the house curve.</p>
+    <div class="fix okfix">
+      <h3><span class="zonetag">RESOLVED</span> Lemon Grass, Jalapeno M vs La Bomba II, Cuphea &amp; Evolvulus 51s</h3>
+      <p>All four odd ratios existed identically in 2026, so they're deliberate carry-overs, not new errors: Lemon Grass 288 was high last year too (144/288&nbsp;=&nbsp;1.41 both years); Jalapeno M priced with the cheap open-pollinated group and La Bomba II with hybrids in 2026's own groupings; Cuphea 51&nbsp;=&nbsp;$0.878 and Evolvulus 51&nbsp;=&nbsp;$0.853 in 2026 &mdash; same off-curve ratios. (The "2024" in the Cuphea name is still a stale label worth cleaning.)</p>
     </div>
-    <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> Tomato Empress &mdash; priciest veg, flattest curve</h3>
-      <p>26-strip at <b>$2.67</b> (next tomato is ~$1.03) with the shallowest volume curve in Vegetables (L5/L1&nbsp;=&nbsp;0.87 vs 0.75 median). High price + flat levels is the same signature the Erysimum error has. If Empress really is a premium grafted line this is fine &mdash; but it's worth one look.</p>
+  </div>
+
+  <h2 class="section">2026 &rarr; 2027 year-over-year</h2>
+  <div class="card">
+    <div class="card-head">
+      <h2>Median price change by zone</h2>
+      <span class="badge warn">ZONE E STANDS OUT</span>
     </div>
-    <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> Two liners ~35% above the 51-strip curve</h3>
-      <p>Cuphea Cupheasy Lavender <b>"2024"</b> (51&nbsp;=&nbsp;$0.877 vs 144&nbsp;=&nbsp;$0.529) and Evolvulus Hawaiian Blue Eyes (51&nbsp;=&nbsp;$0.826 vs 144&nbsp;=&nbsp;$0.52) have 51/144 ratios of 1.66/1.59 where the median is 1.21 &mdash; their 51-strips are ~35% above where the curve predicts. The "2024" in the Cuphea name in a 2027 catalog also looks like a stale carry-over.</p>
+    <table class="data-table">
+      <thead><tr><th>Zone</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead>
+      <tbody>
+        <tr><td>Items (694 matched)</td><td>+2.9%</td><td>+1.8%</td><td>+2.4%</td><td>+4.3%</td><td>+5.6%</td><td>+3.1%</td><td>+3.7%</td><td>0.0%</td><td>&minus;1.4%</td><td><b>+19.3%</b></td></tr>
+        <tr><td>Combo kits (90 matched)</td><td>+3.5%</td><td>+2.1%</td><td>+2.7%</td><td>+4.8%</td><td>+6.2%</td><td>+3.4%</td><td>+4.2%</td><td>+0.9%</td><td>&minus;0.6%</td><td><b>+19.9%</b></td></tr>
+      </tbody>
+    </table>
+    <p style="margin:10px 2px 0; color:var(--muted); font-size:13px;">Combos: 18 kits dropped from 2026, 30 new for 2027. Canadian zones C/D are flat-to-down while A/B rose ~4% &mdash; and Zone E jumped ~20% everywhere (flagged above).</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <h2>Biggest year-over-year movers (Zone 2, exact name+size matches)</h2>
+      <span class="badge warn">CONFIRM DELIBERATE</span>
     </div>
+    <table class="data-table">
+      <thead><tr><th>Direction</th><th>Items</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td class="fail-txt">Down</td><td>Papaver orientale Pizzicato (26 &amp; 144), Rudbeckia Goldblitz (26 &amp; 144), Hibiscus 26, Ranunculus (all sizes), Papaver Brilliant, Parsley, Basil Dolce Fresca, Pepper Red Impact, Eggplant Classic, Dieffenbachia 26</td><td>&minus;15% to &minus;32%</td></tr>
+        <tr><td class="warn-txt">Up</td><td>Hot peppers across the board &mdash; Anaheim (+28&ndash;36%), Bhut Jolokia (+23&ndash;28%), Cayenne (+28%), California Wonder (+21&ndash;29%), Trinidad Scorpion (+18&ndash;54%, the 512/256 jumped most); Strawberries Summer Breeze &amp; Berries Hill (+18&ndash;34%); Begonia-landscape Whopper/Big (+20&ndash;27%); Celosia Premium (+25&ndash;28%); Sempervivum Supersemp (+25%)</td><td>+18% to +54%</td></tr>
+      </tbody>
+    </table>
+    <p style="margin:10px 2px 0; color:var(--muted); font-size:13px;">These look like coordinated repricing (whole families move together), not typos &mdash; but the sizes within Trinidad Scorpion moved very unevenly (+18% on the 26 vs +54% on the 512), and Aster's split (+8% vs +56%) is flagged as a suspect above.</p>
   </div>
 
   <div class="card">
@@ -313,7 +347,7 @@
         <tr><td>No duplicate item+size rows</td><td class="pass-txt">PASS</td></tr>
         <tr><td>Raw SQL rows vs ArtRoom sheets (all 10 zones)</td><td class="pass-txt">PASS &mdash; every summarized ArtRoom price matches its source varieties; 0 conflicts inside "OK to Summarize" groups</td></tr>
         <tr><td>CK ArtRoom vs COMBOKITDATA</td><td class="pass-txt">PASS &mdash; 1,200 combo rows identical</td></tr>
-        <tr><td>Size ladder within items (26 &rarr; 51 &rarr; 144 &rarr; 288 &rarr; 512)</td><td class="pass-txt">PASS everywhere except the 256 column (see above)</td></tr>
+        <tr><td>Size ladder within items (26 &rarr; 51 &rarr; 144 &rarr; 288 &rarr; 512)</td><td class="pass-txt">PASS &mdash; 256 "Half-512" trays intentionally priced near 512 rates (confirmed vs 2026)</td></tr>
         <tr><td>CAD/USD zone ratio (A vs 2)</td><td class="pass-txt">PASS &mdash; 1.343 &plusmn; 0.01 on every item except Erysimum &amp; Cosmos flagged above</td></tr>
         <tr><td>Zone ladder 4 &lt; 5 &lt; 6 and A &lt; B &lt; C &lt; D &lt; E</td><td class="pass-txt">PASS &mdash; only the Zone 2/3 flip above</td></tr>
         <tr><td>No zeros, negatives, or flat L1=L5 pricing</td><td class="pass-txt">PASS</td></tr>
