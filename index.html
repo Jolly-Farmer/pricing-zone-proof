@@ -927,7 +927,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     gap: 8px;
     min-width: 0;
   }
-  .yoy-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+  .yoy-actions { display: flex; gap: 8px; flex: 0 0 auto; margin-left: auto; }
   .yoy-review .comment-composer {
     flex: 1 1 auto;
     min-width: 0;
@@ -2703,8 +2703,8 @@ window.JF_PROOF_SYNC = (function () {
       review.className = "yoy-review";
       var reviewBar = document.createElement("div");
       reviewBar.className = "yoy-review-bar";
-      reviewBar.appendChild(actions);
       reviewBar.appendChild(composer);
+      reviewBar.appendChild(actions);
       review.appendChild(reviewBar);
       review.appendChild(list);
 
