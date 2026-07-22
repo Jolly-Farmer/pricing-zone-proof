@@ -878,10 +878,16 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     color: var(--text-secondary);
   }
   .yoy-row {
+    align-items: stretch;
     border-top: 1px solid var(--separator);
     border-left: 3px solid transparent;
     border-radius: 2px;
     transition: background 0.18s, border-color 0.18s, opacity 0.18s;
+  }
+  .yoy-row > .yoy-item,
+  .yoy-row > .yoy-chips,
+  .yoy-row > .yoy-pct {
+    align-self: center;
   }
   .yoy-row.ok { background: var(--pass-soft); border-left-color: var(--pass); }
   .yoy-row.ok .yoy-item, .yoy-row.ok .yoy-chip { opacity: 0.6; }
@@ -955,9 +961,12 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
   .yoy-review {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 4px;
     min-width: 0;
-    padding-left: 14px;
+    align-self: stretch;
+    margin: -12px 0;
+    padding: 12px 0 12px 14px;
     border-left: 1px solid var(--separator);
   }
   .yoy-review-bar {
