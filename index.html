@@ -43,7 +43,7 @@
     padding: 40px 24px 80px;
     -webkit-font-smoothing: antialiased;
   }
-  .wrap { max-width: 1480px; margin: 0 auto; }
+  .wrap { max-width: 1800px; margin: 0 auto; }
 
   h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 800; letter-spacing: -0.6px; line-height: 1.1; }
   .subtitle { color: var(--text-secondary); font-size: clamp(13px, 1.9vw, 16px); margin-top: 8px; line-height: 1.45; }
@@ -133,10 +133,17 @@
   .legend .dot { width: 15px; height: 15px; font-size: 9px; }
 
   /* ===== Fix cards ===== */
-  .fixes { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 22px; }
+  .fixes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+  }
   .fix {
     border-radius: 16px; padding: 16px 18px; border: 1px solid var(--separator);
     background: var(--card); border-top: 4px solid var(--fail);
+    min-width: 0;
+    overflow-x: auto;
   }
   .fix.warnfix { border-top-color: var(--warn); }
   .fix.okfix { border-top-color: var(--pass); }
@@ -160,6 +167,7 @@
   .fix .vals .got { color: var(--fail); font-weight: 700; }
   .mini-table {
     width: 100%;
+    max-width: 100%;
     border-collapse: separate;
     border-spacing: 0;
     margin: 12px 0 6px;
@@ -168,12 +176,15 @@
     background: var(--card2);
     border: 1px solid var(--separator);
     border-radius: 12px;
+    table-layout: fixed;
   }
   .mini-table th, .mini-table td {
-    padding: 8px 14px;
+    padding: 8px 12px;
     text-align: left;
     border-top: 1px solid var(--separator);
     vertical-align: middle;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
   .mini-table thead th {
     border-top: none;
@@ -252,7 +263,7 @@
   /* ===== Methodology / checks footnote grid ===== */
   .method-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
     gap: 12px;
     margin-top: 4px;
   }
