@@ -726,8 +726,8 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
   <div class="top-bar">
     <nav class="app-tabs" aria-label="Views">
       <div class="app-tab-group" role="group" aria-label="Page">
-        <a class="app-tab" data-tab="proof" href="#">Proof</a>
-        <a class="app-tab" data-tab="checklist" href="#">Checklist</a>
+        <a class="app-tab" data-tab="proof" href="index.html">Proof</a>
+        <a class="app-tab" data-tab="checklist" href="checklist.html">Checklist</a>
       </div>
       <button type="button" class="theme-toggle" id="themeToggle" role="switch" aria-checked="false" aria-label="Toggle light and dark mode" title="Light mode">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -1414,7 +1414,6 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
 
 (function () {
   var page = document.body.getAttribute("data-page") || "proof";
-  var file = decodeURIComponent((location.pathname.split("/").pop() || "").toLowerCase());
   var onPages = /\.github\.io$/i.test(location.hostname);
   var proofHref = onPages ? "index.html" : "Proof Dashboard.html";
   var checklistHref = "checklist.html";
