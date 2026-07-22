@@ -1416,7 +1416,7 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
   var page = document.body.getAttribute("data-page") || "proof";
   var file = decodeURIComponent((location.pathname.split("/").pop() || "").toLowerCase());
   var onPages = /\.github\.io$/i.test(location.hostname);
-  var proofHref = onPages ? "./" : "Proof Dashboard.html";
+  var proofHref = onPages ? "index.html" : "Proof Dashboard.html";
   var checklistHref = "checklist.html";
   var proof = document.querySelector(".app-tab[data-tab='proof']");
   var checklist = document.querySelector(".app-tab[data-tab='checklist']");
