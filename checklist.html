@@ -487,9 +487,9 @@
 (function () {
   var page = document.body.getAttribute("data-page") || "checklist";
   var file = decodeURIComponent((location.pathname.split("/").pop() || "").toLowerCase());
-  var isLocalFile = /proof dashboard\.html|pricing zone checklist\.html/.test(file);
+  var isLocalFile = /proof dashboard\.html|checklist\.html/.test(file);
   var proofHref = isLocalFile ? "Proof Dashboard.html" : "./";
-  var checklistHref = isLocalFile ? "Pricing Zone Checklist.html" : "checklist.html";
+  var checklistHref = "checklist.html";
   var proof = document.querySelector(".app-tab[data-tab='proof']");
   var checklist = document.querySelector(".app-tab[data-tab='checklist']");
   if (proof) {
