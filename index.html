@@ -872,10 +872,22 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     border-left: 3px solid transparent;
     border-radius: 2px;
     transition: background 0.18s, border-color 0.18s, opacity 0.18s;
+    align-items: start;
   }
   .yoy-row.ok { background: var(--pass-soft); border-left-color: var(--pass); }
   .yoy-row.ok .yoy-item, .yoy-row.ok .yoy-chip { opacity: 0.6; }
   .yoy-row.bad { background: var(--fail-soft); border-left-color: var(--fail); }
+  .yoy-row > .yoy-item,
+  .yoy-row > .yoy-chips,
+  .yoy-row > .yoy-pct,
+  .yoy-row > .yoy-actions {
+    align-self: center;
+  }
+  .yoy-row > .card-comments {
+    grid-column: 1 / -1;
+    margin-top: 2px;
+    padding-top: 2px;
+  }
   .yoy-item { font-weight: 700; font-size: 13.5px; line-height: 1.35; }
   .yoy-item .cat {
     display: block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.6px;
@@ -936,11 +948,12 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
   .yoy-summary .flagged { color: var(--fail); font-weight: 700; font-size: 12px; }
   @media (max-width: 700px) {
     .yoy-head { display: none; }
-    .yoy-row { grid-template-columns: 1fr auto; grid-template-areas: "item pct" "chips chips" "actions actions"; row-gap: 8px; }
+    .yoy-row { grid-template-columns: 1fr auto; grid-template-areas: "item pct" "chips chips" "actions actions" "comments comments"; row-gap: 8px; }
     .yoy-row > .yoy-item { grid-area: item; }
     .yoy-row > .yoy-chips { grid-area: chips; }
     .yoy-row > .yoy-pct { grid-area: pct; }
     .yoy-row > .yoy-actions { grid-area: actions; justify-content: flex-start; }
+    .yoy-row > .card-comments { grid-area: comments; }
   }
 
   footer { margin-top: 30px; color: var(--text-secondary); font-size: 12px; line-height: 1.6; }
@@ -1657,7 +1670,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
       <h3>What you can mark</h3>
       <ul>
         <li class="ok"><b>Anomaly cards</b> &mdash; Flag for Review / Looks Good, plus named comments; synced live for the team</li>
-        <li class="ok"><b>YoY mover rows</b> &mdash; ✓ deliberate / ✕ wrong; counter shows reviewed + flagged</li>
+        <li class="ok"><b>YoY mover rows</b> &mdash; ✓ deliberate / ✕ wrong, plus named comments; counter shows reviewed + flagged</li>
         <li class="ok"><b>Shared via Firebase</b> &mdash; same seamless sync as the checklist (no tokens)</li>
       </ul>
     </div>
@@ -2369,7 +2382,47 @@ window.JF_PROOF_SYNC = (function () {
 (function () {
   var hub = window.JF_PROOF_SYNC;
   var state = hub.yoyState;
+  var AUTHORS = ["Ed", "Peter", "Sam", "Ernest"];
+  var AUTHOR_KEY = "proofCommentAuthor.v1";
   function save() { hub.saveYoy(); }
+
+  function readEntry(key) {
+    var cur = state[key];
+    if (!cur) return { verdict: null, comments: [] };
+    if (typeof cur === "string") return { verdict: cur, comments: [] };
+    return {
+      verdict: cur.verdict || null,
+      comments: Array.isArray(cur.comments) ? cur.comments.slice() : []
+    };
+  }
+
+  function writeEntry(key, entry) {
+    var hasComments = entry.comments && entry.comments.length;
+    if (!entry.verdict && !hasComments) {
+      delete state[key];
+    } else if (entry.verdict && !hasComments) {
+      state[key] = entry.verdict;
+    } else {
+      state[key] = { verdict: entry.verdict || null, comments: entry.comments };
+    }
+    save();
+  }
+
+  function getVerdict(key) {
+    return readEntry(key).verdict;
+  }
+
+  function preferredAuthor() {
+    try {
+      var saved = localStorage.getItem(AUTHOR_KEY);
+      if (saved && AUTHORS.indexOf(saved) >= 0) return saved;
+    } catch (e) {}
+    return "";
+  }
+
+  function rememberAuthor(name) {
+    try { localStorage.setItem(AUTHOR_KEY, name); } catch (e) {}
+  }
 
   // sizes: [size label, 2026 price, 2027 price]
   var DOWN = [
@@ -2447,7 +2500,7 @@ window.JF_PROOF_SYNC = (function () {
     function updateCount() {
       var done = 0, flagged = 0;
       rows.forEach(function (r) {
-        var v = state[dir + ":" + r.id];
+        var v = getVerdict(dir + ":" + r.id);
         if (v) done++;
         if (v === "fail") flagged++;
       });
@@ -2506,24 +2559,166 @@ window.JF_PROOF_SYNC = (function () {
       actions.appendChild(bPass);
       actions.appendChild(bFail);
 
+      var comments = document.createElement("div");
+      comments.className = "card-comments";
+      var list = document.createElement("div");
+      list.className = "comment-list";
+      var composer = document.createElement("div");
+      composer.className = "comment-composer";
+      var input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Add a note\u2026";
+      input.setAttribute("aria-label", "Comment");
+      var addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.className = "add-comment";
+      addBtn.textContent = "Post";
+      composer.appendChild(input);
+      composer.appendChild(addBtn);
+
+      var authorWrap = document.createElement("div");
+      authorWrap.className = "comment-author";
+      authorWrap.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<circle cx="12" cy="8" r="3.25"></circle>' +
+          '<path d="M5.5 19.5c1.6-3.2 4-4.8 6.5-4.8s4.9 1.6 6.5 4.8"></path>' +
+        "</svg>";
+      var authorSel = document.createElement("select");
+      authorSel.setAttribute("aria-label", "Comment author");
+      var placeholder = document.createElement("option");
+      placeholder.value = "";
+      placeholder.textContent = "Who";
+      placeholder.disabled = true;
+      placeholder.hidden = true;
+      authorSel.appendChild(placeholder);
+      AUTHORS.forEach(function (name) {
+        var opt = document.createElement("option");
+        opt.value = name;
+        opt.textContent = name;
+        authorSel.appendChild(opt);
+      });
+      var savedAuthor = preferredAuthor();
+      authorSel.value = savedAuthor || "";
+      if (!authorSel.value) authorSel.selectedIndex = 0;
+      var pendingPost = false;
+      function syncAuthorTitle() {
+        authorWrap.title = authorSel.value ? ("Commenting as " + authorSel.value) : "Choose who is commenting";
+        authorWrap.classList.toggle("has-author", !!authorSel.value);
+      }
+      function promptAuthor() {
+        authorWrap.classList.add("needs-author");
+        authorWrap.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        authorSel.focus();
+        if (typeof authorSel.showPicker === "function") {
+          try { authorSel.showPicker(); } catch (e) {}
+        }
+      }
+      syncAuthorTitle();
+      authorSel.addEventListener("change", function () {
+        if (authorSel.value) {
+          rememberAuthor(authorSel.value);
+          authorWrap.classList.remove("needs-author");
+        }
+        syncAuthorTitle();
+        if (pendingPost && authorSel.value) {
+          pendingPost = false;
+          addComment();
+        }
+      });
+      authorWrap.appendChild(authorSel);
+
+      comments.appendChild(list);
+      comments.appendChild(composer);
+      comments.appendChild(authorWrap);
+
+      function renderCommentList() {
+        var entry = readEntry(key);
+        list.innerHTML = "";
+        entry.comments.forEach(function (c, idx) {
+          var cItem = document.createElement("div");
+          cItem.className = "comment-item";
+          var who = document.createElement("div");
+          who.className = "who";
+          who.textContent = c.by || "Unknown";
+          var body = document.createElement("div");
+          body.className = "body";
+          body.textContent = c.text || "";
+          var remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "remove-comment";
+          remove.setAttribute("aria-label", "Remove comment");
+          remove.textContent = "\u00d7";
+          remove.addEventListener("click", function () {
+            var next = readEntry(key);
+            next.comments.splice(idx, 1);
+            writeEntry(key, next);
+            render();
+          });
+          cItem.appendChild(who);
+          cItem.appendChild(body);
+          cItem.appendChild(remove);
+          list.appendChild(cItem);
+        });
+      }
+
       function render() {
-        var v = state[key];
+        var v = getVerdict(key);
         bPass.classList.toggle("on", v === "pass");
         bFail.classList.toggle("on", v === "fail");
         row.classList.toggle("ok", v === "pass");
         row.classList.toggle("bad", v === "fail");
+        renderCommentList();
       }
       function set(v) {
-        if (state[key] === v) { delete state[key]; } else { state[key] = v; }
-        save(); render(); updateCount();
+        var entry = readEntry(key);
+        if (entry.verdict === v) entry.verdict = null;
+        else entry.verdict = v;
+        writeEntry(key, entry);
+        render();
+        updateCount();
+      }
+      function addComment() {
+        var text = (input.value || "").replace(/^\s+|\s+$/g, "");
+        if (!text) {
+          input.focus();
+          return;
+        }
+        var by = authorSel.value;
+        if (AUTHORS.indexOf(by) < 0) {
+          pendingPost = true;
+          promptAuthor();
+          return;
+        }
+        pendingPost = false;
+        authorWrap.classList.remove("needs-author");
+        rememberAuthor(by);
+        var entry = readEntry(key);
+        entry.comments.push({
+          by: by,
+          text: text,
+          at: new Date().toISOString()
+        });
+        writeEntry(key, entry);
+        input.value = "";
+        render();
+        updateCount();
+        input.focus();
       }
       bPass.addEventListener("click", function () { set("pass"); });
       bFail.addEventListener("click", function () { set("fail"); });
+      addBtn.addEventListener("click", addComment);
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          addComment();
+        }
+      });
 
       row.appendChild(item);
       row.appendChild(chips);
       row.appendChild(pctEl);
       row.appendChild(actions);
+      row.appendChild(comments);
       listEl.appendChild(row);
       render();
       updaters.push(render);
