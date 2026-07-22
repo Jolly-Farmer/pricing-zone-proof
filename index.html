@@ -164,18 +164,57 @@
   }
   .fix.warnfix { border-top-color: var(--warn); }
   .fix.okfix { border-top-color: var(--pass); }
-  .fix.okfix .zonetag { background: var(--pass-soft); color: var(--pass); }
   .fix h3 {
     font-size: clamp(15px, 2vw, 17px); font-weight: 800; margin-bottom: 8px;
     display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
     letter-spacing: -0.2px; line-height: 1.3; color: var(--text);
   }
-  .fix .zonetag {
-    font-size: 10px; font-weight: 800; background: var(--fail-soft); color: var(--fail);
-    padding: 3px 9px; border-radius: 999px; letter-spacing: 0.5px; text-transform: uppercase;
+  /* Severity — red / amber / green */
+  .fix .sev {
+    font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 999px;
+    letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap;
   }
-  .fix.warnfix .zonetag { background: var(--warn-soft); color: #b8860b; }
-  @media (prefers-color-scheme: dark) { .fix.warnfix .zonetag { color: var(--warn); } }
+  .sev.error { background: var(--fail-soft); color: var(--fail); }
+  .sev.confirm { background: var(--warn-soft); color: #b8860b; }
+  .sev.resolved { background: var(--pass-soft); color: var(--pass); }
+  @media (prefers-color-scheme: dark) { .sev.confirm { color: var(--warn); } }
+  /* Zone scope — separate cool palette from severity */
+  .fix .zonetag {
+    font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 999px;
+    letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap;
+    background: rgba(88, 86, 214, 0.12); color: #5856d6;
+  }
+  .zonetag.z-all { background: rgba(88, 86, 214, 0.12); color: #5856d6; }
+  .zonetag.z-us { background: rgba(10, 132, 255, 0.14); color: #0a84ff; }
+  .zonetag.z-3 { background: rgba(50, 173, 230, 0.16); color: #0891b2; }
+  .zonetag.z-56 { background: rgba(10, 132, 255, 0.14); color: #0a84ff; }
+  .zonetag.z-e { background: rgba(48, 209, 88, 0.14); color: #248a3d; }
+  .zonetag.z-cde { background: rgba(100, 210, 255, 0.16); color: #0088a3; }
+  .zonetag.z-liners { background: rgba(191, 90, 242, 0.14); color: #9b30d9; }
+  @media (prefers-color-scheme: dark) {
+    .zonetag.z-all { color: #a5a3ff; }
+    .zonetag.z-us, .zonetag.z-56 { color: #64b5ff; }
+    .zonetag.z-3 { color: #5ac8fa; }
+    .zonetag.z-e { color: #30d158; }
+    .zonetag.z-cde { color: #70d7ff; }
+    .zonetag.z-liners { color: #dfa2ff; }
+  }
+  .tag-legend {
+    display: flex; flex-wrap: wrap; gap: 14px 28px;
+    margin: -6px 0 16px; align-items: center;
+  }
+  .tag-legend-group {
+    display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  }
+  .tag-legend-group em {
+    font-style: normal; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    color: var(--text-secondary); margin-right: 4px;
+  }
+  .tag-legend .sev, .tag-legend .zonetag {
+    font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 999px;
+    letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap;
+  }
   .fix p { font-size: 13px; line-height: 1.5; color: var(--text-secondary); }
   .fix p + p { margin-top: 8px; }
   .fix .vals { margin-top: 8px; font-size: 13px; font-variant-numeric: tabular-nums; }
@@ -243,7 +282,6 @@
   .review-btn.okasis.on { background: var(--pass-soft); color: var(--pass); border-color: var(--pass); }
   .fix.reviewed-ok { opacity: 0.55; border-top-color: var(--pass); }
   .fix.reviewed-fix { border-top-color: var(--fail); }
-  .fix.reviewed-ok .zonetag { background: var(--pass-soft); color: var(--pass); }
   .section-count {
     font-size: 12px; font-weight: 700; color: var(--text-secondary);
     background: var(--card); border: 1px solid var(--separator);
@@ -490,15 +528,15 @@
   </div>
   <div class="fixes" data-review-group="edits">
     <div class="fix okfix">
-      <h3><span class="zonetag">RESOLVED</span> Zones C&middot;D&middot;E freight boxes &mdash; not published, same as 2026</h3>
+      <h3><span class="sev resolved">Resolved</span><span class="zonetag z-cde">C · D · E</span> Freight boxes &mdash; not published, same as 2026</h3>
       <p>The 2026 catalogs for C, D and E also had no box-shipment rates on the Shipping Information page (no Box Shipments section, zero dollar amounts) &mdash; the omission is the established design for those zones, not a missed fill. The ws&nbsp;2027 sheet does list C/D/E rates ($72/$37/$18, $79/$33/$22, $120/$90/$50) if they&rsquo;re ever wanted in the catalog.</p>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ZONES 5&middot;6</span> Rack minimums &mdash; PDF matches 2026, ws 2027 sheet disagrees</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-56">Zones 5 · 6</span> Rack minimums &mdash; PDF matches 2026, ws 2027 sheet disagrees</h3>
       <p>Zone 5 PDF says <b>2 racks</b> and Zone 6 says <b>3 racks</b> &mdash; <b>identical to the 2026 catalogs</b>. The ws&nbsp;2027 freight sheet says the opposite (3 for Zone&nbsp;5, 2 for Zone&nbsp;6). So either the sheet has them swapped, or the minimums really changed and the PDFs are carrying stale 2026 text. Ask which source is right; box charges match the sheet everywhere.</p>
     </div>
     <div class="fix okfix">
-      <h3><span class="zonetag">RESOLVED</span> Combo accessories = 2026 exactly, including the $69.98 Bowl</h3>
+      <h3><span class="sev resolved">Resolved</span><span class="zonetag z-all">All zones</span> Combo accessories = 2026 exactly, including the $69.98 Bowl</h3>
       <p>Every accessory price in every zone is identical to the 2026 catalogs &mdash; "repeat last year's pricing" was executed correctly. The 12&quot; Bowl's flat $69.98 across zones 4/5/6 was in the 2026 books too. Full table in the Combo accessories section below.</p>
     </div>
   </div>
@@ -510,9 +548,24 @@
     </div>
     <span class="section-count" data-count-for="data"></span>
   </div>
+  <div class="tag-legend">
+    <span class="tag-legend-group"><em>Severity</em>
+      <span class="sev error">Fix</span>
+      <span class="sev confirm">Confirm</span>
+      <span class="sev resolved">Resolved</span>
+    </span>
+    <span class="tag-legend-group"><em>Scope</em>
+      <span class="zonetag z-all">All zones</span>
+      <span class="zonetag z-3">Zone 3</span>
+      <span class="zonetag z-56">Zones 5 · 6</span>
+      <span class="zonetag z-e">Zone E</span>
+      <span class="zonetag z-cde">C · D · E</span>
+      <span class="zonetag z-liners">Liners</span>
+    </span>
+  </div>
   <div class="fixes" data-review-group="data">
     <div class="fix">
-      <h3><span class="zonetag">ALL ZONES</span> Erysimum Magenta Glow looks like a dropped digit</h3>
+      <h3><span class="sev error">Fix</span><span class="zonetag z-all">All zones</span> Erysimum Magenta Glow looks like a dropped digit</h3>
       <p>Brightside Magenta Glow 51-strip fell from about a dollar to ten cents. Sibling Brightside Orange is still near a dollar.</p>
       <table class="mini-table">
         <thead><tr><th></th><th>Price</th></tr></thead>
@@ -526,7 +579,7 @@
       <p>Also the only item where volume levels flatten (L3 = L4 = L5).</p>
     </div>
     <div class="fix okfix">
-      <h3><span class="zonetag">RESOLVED</span> 256 trays price near 512 &mdash; intentional</h3>
+      <h3><span class="sev resolved">Resolved</span><span class="zonetag z-all">All zones</span> 256 trays price near 512 &mdash; intentional</h3>
       <p>A 256 is a 512 tray cut in half late in production. Same small plugs, half the count, so it prices just above 512. 2026 called this size &ldquo;Half-512.&rdquo;</p>
       <table class="mini-table">
         <thead><tr><th>Ageratum</th><th>512</th><th>256 / Half-512</th></tr></thead>
@@ -537,7 +590,7 @@
       </table>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ZONE 3</span> Zone 3 is cheaper than Zone 2 &mdash; new this year</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-3">Zone 3</span> Zone 3 is cheaper than Zone 2 &mdash; new this year</h3>
       <p>Almost every item and every combo is slightly cheaper in Zone 3 than Zone 2. That flip did not exist in 2026.</p>
       <table class="mini-table">
         <thead><tr><th></th><th>2026</th><th>2027</th></tr></thead>
@@ -550,7 +603,7 @@
       <p>Confirm the zone rate table is intentional.</p>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> EOD discount is no longer a true 10%</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-all">All zones</span> EOD discount is no longer a true 10%</h3>
       <p>The math changed, but the Discounts page still says &ldquo;10% off.&rdquo;</p>
       <table class="mini-table">
         <thead><tr><th></th><th>How it&rsquo;s built</th><th>Actual discount</th></tr></thead>
@@ -562,11 +615,11 @@
       <p>Numbers are self-consistent &mdash; only the wording is now wrong.</p>
     </div>
     <div class="fix okfix">
-      <h3><span class="zonetag">RESOLVED</span> Discounts sample table is static on purpose</h3>
+      <h3><span class="sev resolved">Resolved</span><span class="zonetag z-all">All zones</span> Discounts sample table is static on purpose</h3>
       <p>One example item is shown in every zone PDF to explain how to read the table &mdash; not live zone pricing. 2026 used Ageratum Aloha Blue; 2027 uses Ageratum Kona the same way.</p>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> Some items climb zones much too steeply</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-all">All zones</span> Some items climb zones much too steeply</h3>
       <p>Most of the file sits near a Zone 6 / Zone 2 ratio of <b>1.20</b>. These jumped to ~1.50.</p>
       <table class="mini-table">
         <thead><tr><th>Item (144)</th><th>Z6 / Z2</th><th>Note</th></tr></thead>
@@ -584,7 +637,7 @@
       <p>Herbs and Cosmos look mis-classed. French Marigolds look like an intentional steep ladder that got a bit steeper.</p>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ZONE E</span> Zone E jumped ~19% while other zones barely moved</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-e">Zone E</span> Zone E jumped ~19% while other zones barely moved</h3>
       <p>Every other zone is between about &minus;1% and +6%. Zone E stands alone.</p>
       <table class="mini-table">
         <thead><tr><th></th><th>Zones 2&ndash;D</th><th>Zone E</th></tr></thead>
@@ -597,7 +650,7 @@
       <p>Fine if remote freight drove a deliberate reprice &mdash; worth confirming because the jump is big and uniform.</p>
     </div>
     <div class="fix">
-      <h3><span class="zonetag">ALL ZONES</span> Aster bulk sizes jumped; the 144 barely moved</h3>
+      <h3><span class="sev error">Fix</span><span class="zonetag z-all">All zones</span> Aster bulk sizes jumped; the 144 barely moved</h3>
       <p>The 288 and 512 look inflated relative to the 144 (and relative to 2026).</p>
       <table class="mini-table">
         <thead><tr><th>Size</th><th>2026</th><th>2027</th><th>Change</th></tr></thead>
@@ -617,7 +670,7 @@
       <p>Matsumoto 288 shows the same pattern.</p>
     </div>
     <div class="fix">
-      <h3><span class="zonetag">ALL ZONES</span> Cayenne Long Thin sizes moved in opposite directions</h3>
+      <h3><span class="sev error">Fix</span><span class="zonetag z-all">All zones</span> Cayenne Long Thin sizes moved in opposite directions</h3>
       <p>Same pepper, different trays: the 144 went up hard while the 288 went down.</p>
       <table class="mini-table">
         <thead><tr><th>Size</th><th>2026</th><th>2027</th><th>Change</th></tr></thead>
@@ -638,7 +691,7 @@
       <p>Largest size-ratio shift of any matched vegetable. Either the 144 is too high, or the bulk trays missed the reprice.</p>
     </div>
     <div class="fix">
-      <h3><span class="zonetag">ALL ZONES</span> Lobelia Masterpiece 26-strip is way off its own curve</h3>
+      <h3><span class="sev error">Fix</span><span class="zonetag z-all">All zones</span> Lobelia Masterpiece 26-strip is way off its own curve</h3>
       <p>The 144 and 288 track 2026. The new 26-strip does not.</p>
       <table class="mini-table">
         <thead><tr><th>Size</th><th>2027 price</th><th></th></tr></thead>
@@ -658,7 +711,7 @@
       <p>New item number G037412 &mdash; price doesn&rsquo;t fit the family.</p>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> Tomato Empress is the priciest veg, with the flattest curve</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-all">All zones</span> Tomato Empress is the priciest veg, with the flattest curve</h3>
       <p>New item this year, so there&rsquo;s no 2026 anchor. Fine if it&rsquo;s a true premium line &mdash; worth one look.</p>
       <table class="mini-table">
         <thead><tr><th></th><th>Empress</th><th>Typical tomato</th></tr></thead>
@@ -669,7 +722,7 @@
       </table>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> Helianthus Sunfinity sits far above the rest of the family</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-all">All zones</span> Helianthus Sunfinity sits far above the rest of the family</h3>
       <p>Within Helianthus 144s, two varieties are about 3&times; the others. Same pattern as Erysimum &mdash; likely premium genetics, but confirm.</p>
       <table class="mini-table">
         <thead><tr><th>Helianthus 144</th><th>Price</th></tr></thead>
@@ -683,7 +736,7 @@
       <p>They also have the flattest volume curve in Annuals (L5/L1 = 0.90 vs median 0.76).</p>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">ALL ZONES</span> Cilantro 288 dropped while the 144 stayed flat</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-all">All zones</span> Cilantro 288 dropped while the 144 stayed flat</h3>
       <p>Same size-curve break as Cayenne. Cilantro also sits on the steep zone ladder above.</p>
       <table class="mini-table">
         <thead><tr><th>Size</th><th>2026</th><th>2027</th><th>Change</th></tr></thead>
@@ -701,7 +754,7 @@
       </table>
     </div>
     <div class="fix warnfix">
-      <h3><span class="zonetag">LINERS</span> Rose Sunrosa barely steps up by zone</h3>
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-liners">Liners</span> Rose Sunrosa barely steps up by zone</h3>
       <p>Most liners climb steadily across Canada. Sunrosa stays almost flat &mdash; and it also skipped most of Zone E&rsquo;s big uplift. Four colors share these prices.</p>
       <table class="mini-table">
         <thead><tr><th>Zone</th><th>Sunrosa 26</th></tr></thead>
@@ -724,7 +777,7 @@
       <p>Fine if premium roses use a special rate card. Odd if they should follow the house liner curve.</p>
     </div>
     <div class="fix okfix">
-      <h3><span class="zonetag">RESOLVED</span> Four odd ratios that already existed in 2026</h3>
+      <h3><span class="sev resolved">Resolved</span><span class="zonetag z-all">All zones</span> Four odd ratios that already existed in 2026</h3>
       <p>Same quirks last year &mdash; deliberate carry-overs, not new errors.</p>
       <table class="mini-table">
         <thead><tr><th>Item</th><th>What looked odd</th><th>2026</th></tr></thead>
