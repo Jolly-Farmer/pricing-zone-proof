@@ -1024,7 +1024,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     <div class="stat pass"><div class="num">10/10</div><div class="lbl">Annuals + Perennials</div></div>
     <div class="stat pass"><div class="num">10/10</div><div class="lbl">Tag pricing</div></div>
     <div class="stat fail"><div class="num">4</div><div class="lbl">Data errors</div></div>
-    <div class="stat warn"><div class="num">8</div><div class="lbl">To confirm</div></div>
+    <div class="stat warn"><div class="num">10</div><div class="lbl">To confirm</div></div>
     <div class="stat pass"><div class="num">5</div><div class="lbl">Resolved via 2026</div></div>
   </div>
 
@@ -1267,6 +1267,40 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
       <p>They also have the flattest volume curve in Annuals (L5/L1 = 0.90 vs median 0.76).</p>
     </div>
     <div class="fix warnfix">
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-all">All zones</span> Echinacea Double Scoop is 3&times; Magnus in the same series</h3>
+      <p>Deep re-scan: only sibling gap &ge;2.5&times; inside a shared series+size (Zone 2, 26-strip). Most of the series sits in a tight premium band; Magnus is the cheap outlier and Double Scoop the top.</p>
+      <table class="mini-table">
+        <thead><tr><th>Echinacea-purpurea 26</th><th>L1</th></tr></thead>
+        <tbody>
+          <tr class="ok"><td>Magnus</td><td class="pass-txt">$0.982</td></tr>
+          <tr><td>Pow Wow (2)</td><td>$1.275</td></tr>
+          <tr><td>Cheyenne Spirit</td><td>$1.748</td></tr>
+          <tr><td>SunSeekers / Sombrero cluster (11)</td><td>$2.712</td></tr>
+          <tr class="bad"><td>Double Scoop Raspberry / Watermelon Deluxe</td><td class="fail-txt">$3.046</td></tr>
+        </tbody>
+      </table>
+      <table class="mini-table">
+        <thead><tr><th></th><th></th></tr></thead>
+        <tbody>
+          <tr class="watch"><td>Deluxe / Magnus</td><td class="fail-txt">3.10&times;</td></tr>
+          <tr class="ok"><td>Series median</td><td class="pass-txt">$2.712</td></tr>
+        </tbody>
+      </table>
+      <p>Fine if Double Scoop is a true premium SKU and Magnus is the economy line &mdash; worth one look because the spread is the widest in the file.</p>
+    </div>
+    <div class="fix warnfix">
+      <h3><span class="sev confirm">Confirm</span><span class="zonetag z-all">All zones</span> Cleome Queen Mix took the deepest unambiguous YoY cut</h3>
+      <p>Among single-variety genus+size matches to 2026, this is the largest Zone 2 drop &mdash; and both sizes moved hard, so it reads as a coordinated reprice rather than a single typo.</p>
+      <table class="mini-table">
+        <thead><tr><th>Size</th><th>2026</th><th>2027</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr class="bad"><td>288</td><td>$0.412</td><td>$0.189</td><td class="fail-txt">&minus;54%</td></tr>
+          <tr class="bad"><td>144</td><td>$0.649</td><td>$0.405</td><td class="fail-txt">&minus;38%</td></tr>
+        </tbody>
+      </table>
+      <p>Confirm the 2027 price is intentional (and that 2026 wasn&rsquo;t a one-off high year for Queen Mix).</p>
+    </div>
+    <div class="fix warnfix">
       <h3><span class="sev confirm">Confirm</span><span class="zonetag z-all">All zones</span> Cilantro 288 dropped while the 144 stayed flat</h3>
       <p>Same size-curve break as Cayenne. Cilantro also sits on the steep zone ladder above.</p>
       <table class="mini-table">
@@ -1424,7 +1458,8 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     <table class="data-table">
       <thead><tr><th>Check</th><th>Result</th></tr></thead>
       <tbody>
-        <tr><td>Volume levels descend (L1 &ge; L2 &ge; &hellip; &ge; L5)</td><td class="pass-txt">PASS &mdash; 0 violations in 17,860 rows</td></tr>
+        <tr><td>EOD math (NON &divide; 1.1)</td><td class="pass-txt">PASS &mdash; 100% of EOD L1 values match NON &divide; 1.1 within $0.001 (median discount 9.09%; deep re-scan of 37,800 pairs)</td></tr>
+        <tr><td>Volume levels descend (L1 &ge; L2 &ge; &hellip; &ge; L5)</td><td class="pass-txt">PASS &mdash; 0 violations in 37,800 NON-EOD rows (deep re-scan)</td></tr>
         <tr><td>EOD row present for every item</td><td class="pass-txt">PASS &mdash; no missing EOD rows</td></tr>
         <tr><td>Same items in all 10 zones</td><td class="pass-txt">PASS &mdash; 1,786 items, none missing</td></tr>
         <tr><td>No duplicate item+size rows</td><td class="pass-txt">PASS</td></tr>
@@ -1567,7 +1602,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
       <div class="tag">2027 vs itself &middot; outlier math</div>
       <h3>Statistical anomaly scans</h3>
       <ul>
-        <li class="hit"><b>Sibling gaps in series+size</b> &mdash; Erysimum 9.4×; Jalapeno M vs La Bomba (carry-over)</li>
+        <li class="hit"><b>Sibling gaps in series+size</b> &mdash; Erysimum 9.4×; Echinacea Double Scoop / Magnus 3.1×; Jalapeno M vs La Bomba (carry-over)</li>
         <li class="hit"><b>Size-ratio outliers</b> &mdash; Lobelia Masterpiece 26/144 = 4.52 (median 1.93)</li>
         <li class="warn"><b>Level-curve shape</b> &mdash; L5/L1 z-score within cat+size; Helianthus Sunfinity +4.6σ flat; Dracaena Spikes steep</li>
         <li class="warn"><b>Absolute L1 z-score</b> &mdash; within cat+size; Helianthus / Begonia Groovy premium cluster</li>
@@ -2323,6 +2358,7 @@ window.JF_PROOF_SYNC = (function () {
 
   // sizes: [size label, 2026 price, 2027 price]
   var DOWN = [
+    { id: "cleome-queen", item: "Cleome Queen Mix \u2014 deepest unambiguous YoY cut", cat: "Annuals", sizes: [["288", 0.412, 0.189], ["144", 0.649, 0.405]] },
     { id: "papaver-pizzicato", item: "Papaver orientale Pizzicato Mix", cat: "Perennials", sizes: [["26", 1.202, 0.816], ["144", 0.592, 0.414]] },
     { id: "rudbeckia-goldblitz", item: "Rudbeckia Goldblitz", cat: "Perennials", sizes: [["26", 1.569, 1.080], ["144", 0.794, 0.569]] },
     { id: "hibiscus", item: "Hibiscus", cat: "Perennials", sizes: [["26", 1.102, 0.781]] },
@@ -2337,6 +2373,7 @@ window.JF_PROOF_SYNC = (function () {
   ];
   var UP = [
     { id: "aster", item: "Aster \u2014 flagged as suspect above", cat: "Annuals", sizes: [["288", 0.159, 0.248], ["512", 0.081, 0.116]] },
+    { id: "gloxinia-avanti", item: "Gloxinia Avanti Mix", cat: "Annuals", sizes: [["26", 1.126, 1.370], ["144", 0.572, 0.694]] },
     { id: "pepper-trinidad", item: "Pepper Trinidad Scorpion", cat: "Vegetables", sizes: [["512", 0.144, 0.222], ["256", 0.161, 0.237], ["144", 0.442, 0.549], ["288", 0.290, 0.353]] },
     { id: "pepper-anaheim", item: "Pepper Anaheim", cat: "Vegetables", sizes: [["144", 0.336, 0.457], ["512", 0.107, 0.139], ["256", 0.123, 0.157], ["288", 0.188, 0.230]] },
     { id: "strawberry-summer-breeze", item: "Strawberry Summer Breeze", cat: "Vegetables", sizes: [["288", 0.560, 0.750], ["144", 0.842, 1.067], ["26", 1.499, 1.825]] },
