@@ -251,6 +251,26 @@
   .data-table .warn-txt { color: #b8860b; font-weight: 650; }
   @media (prefers-color-scheme: dark) { .data-table .warn-txt { color: var(--warn); } }
 
+  .data-table.heat th:not(:first-child),
+  .data-table.heat td:not(:first-child) { text-align: center; font-weight: 700; }
+  .data-table.heat .chg-flat { color: var(--text-secondary); font-weight: 600; }
+  .data-table.heat .chg-down {
+    background: rgba(10, 132, 255, 0.12); color: #0a84ff;
+  }
+  .data-table.heat .chg-up1 {
+    background: rgba(255, 159, 10, 0.10); color: #c57a00;
+  }
+  .data-table.heat .chg-up2 {
+    background: rgba(255, 159, 10, 0.18); color: #b86a00;
+  }
+  .data-table.heat .chg-hot {
+    background: rgba(255, 42, 59, 0.16); color: var(--fail);
+  }
+  @media (prefers-color-scheme: dark) {
+    .data-table.heat .chg-up1 { color: #ffb340; }
+    .data-table.heat .chg-up2 { color: #ffcc66; }
+  }
+
   .card .note {
     margin: 0;
     padding: 13px 20px 16px;
@@ -700,11 +720,35 @@
       </div>
       <span class="badge warn">ZONE E STANDS OUT</span>
     </div>
-    <table class="data-table">
+    <table class="data-table heat">
       <thead><tr><th>Zone</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th></tr></thead>
       <tbody>
-        <tr><td>Items (694 matched)</td><td>+2.9%</td><td>+1.8%</td><td>+2.4%</td><td>+4.3%</td><td>+5.6%</td><td>+3.1%</td><td>+3.7%</td><td>0.0%</td><td>&minus;1.4%</td><td><b>+19.3%</b></td></tr>
-        <tr><td>Combo kits (90 matched)</td><td>+3.5%</td><td>+2.1%</td><td>+2.7%</td><td>+4.8%</td><td>+6.2%</td><td>+3.4%</td><td>+4.2%</td><td>+0.9%</td><td>&minus;0.6%</td><td><b>+19.9%</b></td></tr>
+        <tr>
+          <td>Items (694 matched)</td>
+          <td class="chg-up1">+2.9%</td>
+          <td class="chg-up1">+1.8%</td>
+          <td class="chg-up1">+2.4%</td>
+          <td class="chg-up2">+4.3%</td>
+          <td class="chg-up2">+5.6%</td>
+          <td class="chg-up1">+3.1%</td>
+          <td class="chg-up1">+3.7%</td>
+          <td class="chg-flat">0.0%</td>
+          <td class="chg-down">&minus;1.4%</td>
+          <td class="chg-hot">+19.3%</td>
+        </tr>
+        <tr>
+          <td>Combo kits (90 matched)</td>
+          <td class="chg-up1">+3.5%</td>
+          <td class="chg-up1">+2.1%</td>
+          <td class="chg-up1">+2.7%</td>
+          <td class="chg-up2">+4.8%</td>
+          <td class="chg-up2">+6.2%</td>
+          <td class="chg-up1">+3.4%</td>
+          <td class="chg-up2">+4.2%</td>
+          <td class="chg-flat">+0.9%</td>
+          <td class="chg-down">&minus;0.6%</td>
+          <td class="chg-hot">+19.9%</td>
+        </tr>
       </tbody>
     </table>
     <p class="note">Combos: 18 kits dropped from 2026, 30 new for 2027. Canadian zones C/D are flat-to-down while A/B rose ~4% &mdash; and Zone E jumped ~20% everywhere (flagged above).</p>
