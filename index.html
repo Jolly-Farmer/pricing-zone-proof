@@ -459,8 +459,30 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
   .comment-item .who {
     flex: 0 0 auto;
     min-width: 3.6em;
-    font-size: 12px; font-weight: 750;
+  }
+  .comment-item .who-select {
+    font: inherit;
+    font-size: 12px;
+    font-weight: 750;
     color: var(--text);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 1px 4px;
+    margin: -2px -4px;
+    cursor: pointer;
+    max-width: 6.5em;
+  }
+  .comment-item .who-select:hover {
+    border-color: var(--separator);
+    background: rgba(60, 60, 67, 0.04);
+  }
+  html.dark .comment-item .who-select:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .comment-item .who-select:focus {
+    outline: none;
+    border-color: var(--accent);
   }
   .comment-item .body {
     flex: 1 1 auto;
@@ -2369,7 +2391,33 @@ window.JF_PROOF_SYNC = (function () {
           item.className = "comment-item";
           var who = document.createElement("div");
           who.className = "who";
-          who.textContent = c.by || "Unknown";
+          var whoSel = document.createElement("select");
+          whoSel.className = "who-select";
+          whoSel.setAttribute("aria-label", "Change comment author");
+          whoSel.title = "Change who posted this";
+          var by = c.by || "";
+          if (by && AUTHORS.indexOf(by) < 0) {
+            var orphan = document.createElement("option");
+            orphan.value = by;
+            orphan.textContent = by;
+            whoSel.appendChild(orphan);
+          }
+          AUTHORS.forEach(function (name) {
+            var opt = document.createElement("option");
+            opt.value = name;
+            opt.textContent = name;
+            whoSel.appendChild(opt);
+          });
+          if (by) whoSel.value = by;
+          whoSel.addEventListener("change", function () {
+            var next = readEntry(id);
+            if (!next.comments[idx]) return;
+            next.comments[idx].by = whoSel.value;
+            writeEntry(id, next);
+            rememberAuthor(whoSel.value);
+            render();
+          });
+          who.appendChild(whoSel);
           var body = document.createElement("div");
           body.className = "body";
           body.textContent = c.text || "";
@@ -2817,7 +2865,33 @@ window.JF_PROOF_SYNC = (function () {
           cItem.className = "comment-item";
           var who = document.createElement("div");
           who.className = "who";
-          who.textContent = c.by || "Unknown";
+          var whoSel = document.createElement("select");
+          whoSel.className = "who-select";
+          whoSel.setAttribute("aria-label", "Change comment author");
+          whoSel.title = "Change who posted this";
+          var by = c.by || "";
+          if (by && AUTHORS.indexOf(by) < 0) {
+            var orphan = document.createElement("option");
+            orphan.value = by;
+            orphan.textContent = by;
+            whoSel.appendChild(orphan);
+          }
+          AUTHORS.forEach(function (name) {
+            var opt = document.createElement("option");
+            opt.value = name;
+            opt.textContent = name;
+            whoSel.appendChild(opt);
+          });
+          if (by) whoSel.value = by;
+          whoSel.addEventListener("change", function () {
+            var next = readEntry(key);
+            if (!next.comments[idx]) return;
+            next.comments[idx].by = whoSel.value;
+            writeEntry(key, next);
+            rememberAuthor(whoSel.value);
+            render();
+          });
+          who.appendChild(whoSel);
           var body = document.createElement("div");
           body.className = "body";
           body.textContent = c.text || "";
