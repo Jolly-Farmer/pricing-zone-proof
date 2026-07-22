@@ -873,9 +873,21 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     padding: 12px 16px;
   }
   .yoy-head {
-    padding-top: 4px; padding-bottom: 10px;
+    padding-top: 10px; padding-bottom: 10px;
     font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
     color: var(--text-secondary);
+    align-items: center;
+  }
+  .yoy-head > span {
+    display: flex;
+    align-items: center;
+    min-height: 1.2em;
+    line-height: 1.2;
+  }
+  .yoy-head > span:nth-child(3) { justify-content: flex-end; }
+  .yoy-head > span:last-child {
+    padding-left: 14px;
+    border-left: 1px solid transparent;
   }
   .yoy-row {
     align-items: stretch;
@@ -1551,7 +1563,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
       </div>
       <span class="section-count" id="yoyCountDown"></span>
     </div>
-    <div class="yoy-head"><span>Item</span><span>By size &mdash; 2026 &rarr; 2027</span><span style="text-align:right">Change</span><span>Verdict / note</span></div>
+    <div class="yoy-head"><span>Item</span><span>By size &mdash; 2026 &rarr; 2027</span><span>Change</span><span>Verdict / note</span></div>
     <div id="yoyListDown"></div>
     <p class="note">These cuts are <b>not Zone-2-only</b> &mdash; zones 3–D move within a few points of Zone 2 on every item above. Zone E is the exception (cuts of −0% to −14%) because its across-the-board ~+19% uplift offsets them. Within Perennials overall, only <b>9%</b> of matched items fell ≥20%; the deep cuts are a Papaver / Rudbeckia / Hibiscus cluster, not a category-wide slash (Perennials median YoY = −2.2%).</p>
   </div>
@@ -1564,7 +1576,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
       </div>
       <span class="section-count" id="yoyCountUp"></span>
     </div>
-    <div class="yoy-head"><span>Item</span><span>By size &mdash; 2026 &rarr; 2027</span><span style="text-align:right">Change</span><span>Verdict / note</span></div>
+    <div class="yoy-head"><span>Item</span><span>By size &mdash; 2026 &rarr; 2027</span><span>Change</span><span>Verdict / note</span></div>
     <div id="yoyListUp"></div>
     <p class="note">Whole families move together (hot peppers, strawberries, landscape begonias), so these read as coordinated repricing rather than typos. The exceptions worth a question: Trinidad Scorpion's sizes moved very unevenly (+22% to +54%), and Aster's 288/512 jumped while its 144 only went +8% &mdash; flagged as a data error above. Mark each one <b>&#10003;</b> (deliberate, OK) or <b>&#10005;</b> (wrong, needs a fix) &mdash; your verdicts are saved in this browser.</p>
   </div>
