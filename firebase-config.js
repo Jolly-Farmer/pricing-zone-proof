@@ -1,5 +1,5 @@
 // Firebase config for jf-pricing-checklist (Realtime Database team sync).
-// Public by design — security is database rules on /checklist.
+// Public by design — security is database rules on /checklist and /proof.
 window.JF_FIREBASE_CONFIG = {
   apiKey: "AIzaSyBlJX8KT5tDvxqZQQU0tENCJCfn9ukVs_Y",
   authDomain: "jf-pricing-checklist.firebaseapp.com",

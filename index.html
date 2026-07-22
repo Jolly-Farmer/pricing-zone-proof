@@ -112,6 +112,10 @@
 
   h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 800; letter-spacing: -0.6px; line-height: 1.1; }
   .subtitle { color: var(--text-secondary); font-size: clamp(13px, 1.9vw, 16px); margin-top: 8px; line-height: 1.45; }
+  .sync-status { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+  .sync-status.ok { color: var(--pass); }
+  .sync-status.warn { color: var(--warn); }
+  .sync-status.err { color: var(--fail); }
   header.page-head { margin-bottom: 0; }
   .hdr-btn {
     font: inherit; font-size: 13px; font-weight: 700;
@@ -755,6 +759,7 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
     <div class="page-head-text">
       <h1>2027 Pricing Zone Proof</h1>
       <p class="subtitle">A visual check of the 2027 zone catalogs against the source price file, freight sheet, and last year&rsquo;s books.</p>
+      <p class="sync-status" id="proofSyncStatus">Connecting to shared reviews&hellip;</p>
     </div>
   </header>
 
@@ -1371,9 +1376,9 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
       <div class="tag">Dashboard review tools</div>
       <h3>What you can mark</h3>
       <ul>
-        <li class="ok"><b>Anomaly cards</b> &mdash; Needs fix / OK as-is; saved in localStorage</li>
+        <li class="ok"><b>Anomaly cards</b> &mdash; Needs fix / OK as-is; synced live for the team</li>
         <li class="ok"><b>YoY mover rows</b> &mdash; ✓ deliberate / ✕ wrong; counter shows reviewed + flagged</li>
-        <li class="ok"><b>Verdicts are per-browser</b> &mdash; not synced across devices or users on the shared link</li>
+        <li class="ok"><b>Shared via Firebase</b> &mdash; same seamless sync as the checklist (no tokens)</li>
       </ul>
     </div>
 
@@ -1387,6 +1392,9 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
   </footer>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script>
 (function () {
   var KEY = "jfTheme.v1";
@@ -1480,19 +1488,216 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
   });
 })();
 
-/* ===== Review controls for anomaly cards ===== */
-(function () {
-  var KEY = "proofDashboardReviews.v1";
-  var state = {};
-  try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-  Object.keys(state).forEach(function (k) {
+/* ===== Firebase shared proof reviews (same pattern as checklist) ===== */
+window.JF_PROOF_SYNC = (function () {
+  var ANOMALY_KEY = "proofDashboardReviews.v1";
+  var YOY_KEY = "yoyReviews.v1";
+  var SYNC_PATH = "proof";
+  var syncStatusEl = document.getElementById("proofSyncStatus");
+  var anomalyState = {};
+  var yoyState = {};
+  var anomalyRefresh = [];
+  var yoyRefresh = [];
+  var remoteUpdatedAt = null;
+  var pushTimer = null;
+  var pushing = false;
+  var dirty = false;
+  var applyingRemote = false;
+  var lastPushedAt = null;
+  var dbRef = null;
+
+  try { anomalyState = JSON.parse(localStorage.getItem(ANOMALY_KEY)) || {}; } catch (e) {}
+  Object.keys(anomalyState).forEach(function (k) {
     if (k.indexOf("suspects:") === 0) {
       var nk = "data:" + k.slice(9);
-      if (!state[nk]) state[nk] = state[k];
-      delete state[k];
+      if (!anomalyState[nk]) anomalyState[nk] = anomalyState[k];
+      delete anomalyState[k];
     }
   });
-  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+  try { yoyState = JSON.parse(localStorage.getItem(YOY_KEY)) || {}; } catch (e) {}
+
+  function setSyncStatus(msg, kind) {
+    if (!syncStatusEl) return;
+    syncStatusEl.textContent = msg;
+    syncStatusEl.className = "sync-status" + (kind ? " " + kind : "");
+  }
+
+  function replaceObj(target, source) {
+    Object.keys(target).forEach(function (k) { delete target[k]; });
+    if (source && typeof source === "object") {
+      Object.keys(source).forEach(function (k) { target[k] = source[k]; });
+    }
+  }
+
+  function persistLocal() {
+    try { localStorage.setItem(ANOMALY_KEY, JSON.stringify(anomalyState)); } catch (e) {}
+    try { localStorage.setItem(YOY_KEY, JSON.stringify(yoyState)); } catch (e) {}
+  }
+
+  function getDoc() {
+    return {
+      v: 1,
+      updatedAt: new Date().toISOString(),
+      anomalyReviews: anomalyState,
+      yoyReviews: yoyState
+    };
+  }
+
+  function refreshAll() {
+    anomalyRefresh.forEach(function (fn) { try { fn(); } catch (e) {} });
+    yoyRefresh.forEach(function (fn) { try { fn(); } catch (e) {} });
+  }
+
+  function applyDoc(doc) {
+    if (!doc || typeof doc !== "object") return;
+    applyingRemote = true;
+    try {
+      replaceObj(anomalyState, doc.anomalyReviews);
+      replaceObj(yoyState, doc.yoyReviews);
+      persistLocal();
+      refreshAll();
+      if (doc.updatedAt) remoteUpdatedAt = doc.updatedAt;
+    } finally {
+      applyingRemote = false;
+    }
+  }
+
+  function docHasContent(doc) {
+    if (!doc) return false;
+    if (doc.anomalyReviews && Object.keys(doc.anomalyReviews).length) return true;
+    if (doc.yoyReviews && Object.keys(doc.yoyReviews).length) return true;
+    return false;
+  }
+
+  function localHasContent() {
+    return Object.keys(anomalyState).length > 0 || Object.keys(yoyState).length > 0;
+  }
+
+  function parseRemote(val) {
+    if (!val) return null;
+    if (typeof val.body === "string") {
+      try { return JSON.parse(val.body); } catch (e) { return null; }
+    }
+    if (val.anomalyReviews || val.yoyReviews || val.v) return val;
+    return null;
+  }
+
+  function pushRemote() {
+    if (!dbRef) return Promise.resolve();
+    if (pushing) {
+      dirty = true;
+      return Promise.resolve();
+    }
+    pushing = true;
+    dirty = false;
+    setSyncStatus("Saving…");
+    var doc = getDoc();
+    lastPushedAt = doc.updatedAt;
+    return dbRef.set({
+      updatedAt: doc.updatedAt,
+      body: JSON.stringify(doc)
+    }).then(function () {
+      remoteUpdatedAt = doc.updatedAt;
+      setSyncStatus("Synced · " + new Date(doc.updatedAt).toLocaleString(), "ok");
+    }).catch(function (err) {
+      setSyncStatus("Sync failed: " + (err && err.message ? err.message : "unknown error"), "err");
+    }).finally(function () {
+      pushing = false;
+      if (dirty) queueSync();
+    });
+  }
+
+  function queueSync() {
+    if (applyingRemote) return;
+    dirty = true;
+    if (!dbRef) {
+      setSyncStatus("Saved in this browser only (Firebase not configured).", "warn");
+      return;
+    }
+    setSyncStatus("Saving…");
+    if (pushTimer) clearTimeout(pushTimer);
+    pushTimer = setTimeout(function () {
+      pushTimer = null;
+      pushRemote();
+    }, 400);
+  }
+
+  function handleRemoteValue(snap) {
+    var val = snap.val();
+    var doc = parseRemote(val);
+
+    if (!doc || !docHasContent(doc)) {
+      if (localHasContent()) {
+        setSyncStatus("Sharing your local reviews…", "warn");
+        pushRemote();
+      } else {
+        setSyncStatus("Shared reviews ready — changes sync live for everyone.", "ok");
+      }
+      return;
+    }
+
+    if (doc.updatedAt && doc.updatedAt === lastPushedAt) {
+      remoteUpdatedAt = doc.updatedAt;
+      setSyncStatus("Synced · " + new Date(doc.updatedAt).toLocaleString(), "ok");
+      return;
+    }
+
+    if (dirty || pushing) return;
+
+    var incoming = doc.updatedAt ? Date.parse(doc.updatedAt) : 0;
+    var known = remoteUpdatedAt ? Date.parse(remoteUpdatedAt) : 0;
+    if (incoming && known && incoming <= known) return;
+
+    applyDoc(doc);
+    var when = doc.updatedAt ? " · " + new Date(doc.updatedAt).toLocaleString() : "";
+    setSyncStatus("Live sync on" + when, "ok");
+  }
+
+  function startFirebaseSync() {
+    var cfg = window.JF_FIREBASE_CONFIG;
+    if (!cfg || !cfg.apiKey || !cfg.databaseURL || String(cfg.apiKey).indexOf("YOUR_") === 0) {
+      setSyncStatus("Saved in this browser only. Add firebase-config.js to enable team sync.", "warn");
+      return;
+    }
+    if (typeof firebase === "undefined") {
+      setSyncStatus("Could not load Firebase. Check your network.", "err");
+      return;
+    }
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(cfg);
+      dbRef = firebase.database().ref(SYNC_PATH);
+      setSyncStatus("Connecting…");
+      dbRef.on("value", handleRemoteValue, function (err) {
+        setSyncStatus("Sync error: " + (err && err.message ? err.message : "connection failed"), "err");
+      });
+    } catch (err) {
+      setSyncStatus("Firebase setup error: " + (err && err.message ? err.message : "unknown"), "err");
+    }
+  }
+
+  startFirebaseSync();
+
+  return {
+    anomalyState: anomalyState,
+    yoyState: yoyState,
+    saveAnomaly: function () {
+      persistLocal();
+      queueSync();
+    },
+    saveYoy: function () {
+      persistLocal();
+      queueSync();
+    },
+    registerAnomalyRefresh: function (fn) { anomalyRefresh.push(fn); },
+    registerYoyRefresh: function (fn) { yoyRefresh.push(fn); }
+  };
+})();
+
+/* ===== Review controls for anomaly cards ===== */
+(function () {
+  var hub = window.JF_PROOF_SYNC;
+  var state = hub.anomalyState;
+  function save() { hub.saveAnomaly(); }
 
   function slug(text) {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
@@ -1619,6 +1824,7 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
       }
       btnFix.addEventListener("click", function () { set("fix"); });
       btnOk.addEventListener("click", function () { set("ok"); });
+      hub.registerAnomalyRefresh(render);
       render();
     });
 
@@ -1629,10 +1835,9 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
 
 /* ===== Year-over-year anomaly pass/fail review ===== */
 (function () {
-  var KEY = "yoyReviews.v1";
-  var state = {};
-  try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
-  function save() { localStorage.setItem(KEY, JSON.stringify(state)); }
+  var hub = window.JF_PROOF_SYNC;
+  var state = hub.yoyState;
+  function save() { hub.saveYoy(); }
 
   // sizes: [size label, 2026 price, 2027 price]
   var DOWN = [
@@ -1791,6 +1996,10 @@ html.dark .data-table.heat .chg-up2 { color: #ffcc66; }
     });
 
     updateCount();
+    hub.registerYoyRefresh(function () {
+      updaters.forEach(function (fn) { fn(); });
+      updateCount();
+    });
   }
 
   build(document.getElementById("yoyListDown"), document.getElementById("yoyCountDown"), DOWN, "down");
