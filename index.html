@@ -1547,7 +1547,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     <div class="card-head">
       <div class="section-titles">
         <h2>Biggest cuts</h2>
-        <p class="sub">Zone 2, exact name + size matches</p>
+        <p class="sub">Listed in finished price list order &middot; Zone 2 matches</p>
       </div>
       <span class="section-count" id="yoyCountDown"></span>
     </div>
@@ -1560,7 +1560,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     <div class="card-head">
       <div class="section-titles">
         <h2>Biggest increases</h2>
-        <p class="sub">Zone 2, exact name + size matches</p>
+        <p class="sub">Listed in finished price list order &middot; Zone 2 matches</p>
       </div>
       <span class="section-count" id="yoyCountUp"></span>
     </div>
@@ -1774,7 +1774,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
       <h3>What you can mark</h3>
       <ul>
         <li class="ok"><b>Anomaly cards</b> &mdash; Flag for Review / Looks Good, plus named comments; synced live for the team</li>
-        <li class="ok"><b>YoY mover rows</b> &mdash; ✓ deliberate / ✕ wrong, plus named comments; counter shows reviewed + flagged</li>
+        <li class="ok"><b>YoY mover rows</b> &mdash; listed in finished price list (ArtRoom) order; ✓ deliberate / ✕ wrong, plus named comments</li>
         <li class="ok"><b>Shared via Firebase</b> &mdash; same seamless sync as the checklist (no tokens)</li>
       </ul>
     </div>
@@ -2552,37 +2552,38 @@ window.JF_PROOF_SYNC = (function () {
   }
 
   // sizes: [size label, 2026 price, 2027 price]
+  // Order follows Zone 2 ArtRoom / finished catalog sequence (not magnitude).
   var DOWN = [
     { id: "cleome-queen", item: "Cleome Queen Mix \u2014 deepest unambiguous YoY cut", cat: "Annuals", sizes: [["288", 0.412, 0.189], ["144", 0.649, 0.405]] },
-    { id: "papaver-pizzicato", item: "Papaver orientale Pizzicato Mix", cat: "Perennials", sizes: [["26", 1.202, 0.816], ["144", 0.592, 0.414]] },
-    { id: "rudbeckia-goldblitz", item: "Rudbeckia Goldblitz", cat: "Perennials", sizes: [["26", 1.569, 1.080], ["144", 0.794, 0.569]] },
-    { id: "hibiscus", item: "Hibiscus", cat: "Perennials", sizes: [["26", 1.102, 0.781]] },
-    { id: "cilantro", item: "Cilantro", cat: "Herbs", sizes: [["288", 0.143, 0.105]] },
     { id: "ranunculus", item: "Ranunculus", cat: "Annuals", sizes: [["288", 0.489, 0.362], ["26", 1.791, 1.356], ["144", 0.837, 0.664]] },
-    { id: "papaver-brilliant", item: "Papaver orientale Brilliant", cat: "Perennials", sizes: [["26", 1.013, 0.795], ["144", 0.494, 0.403]] },
-    { id: "parsley", item: "Parsley", cat: "Herbs", sizes: [["144", 0.286, 0.228], ["288", 0.132, 0.112], ["512", 0.076, 0.065]] },
-    { id: "basil-dolce", item: "Basil Dolce Fresca", cat: "Herbs", sizes: [["288", 0.131, 0.108]] },
-    { id: "pepper-red-impact", item: "Pepper Red Impact", cat: "Vegetables", sizes: [["288", 0.368, 0.304], ["256", 0.294, 0.250]] },
     { id: "eggplant-classic", item: "Eggplant Classic", cat: "Vegetables", sizes: [["512", 0.134, 0.111], ["256", 0.151, 0.129]] },
-    { id: "dieffenbachia", item: "Dieffenbachia", cat: "Foliage", sizes: [["26", 2.159, 1.791]] }
+    { id: "pepper-red-impact", item: "Pepper Red Impact", cat: "Vegetables", sizes: [["288", 0.368, 0.304], ["256", 0.294, 0.250]] },
+    { id: "basil-dolce", item: "Basil Dolce Fresca", cat: "Herbs", sizes: [["288", 0.131, 0.108]] },
+    { id: "cilantro", item: "Cilantro", cat: "Herbs", sizes: [["288", 0.143, 0.105]] },
+    { id: "parsley", item: "Parsley", cat: "Herbs", sizes: [["144", 0.286, 0.228], ["288", 0.132, 0.112], ["512", 0.076, 0.065]] },
+    { id: "dieffenbachia", item: "Dieffenbachia", cat: "Foliage", sizes: [["26", 2.159, 1.791]] },
+    { id: "hibiscus", item: "Hibiscus", cat: "Foliage", sizes: [["26", 1.102, 0.781]] },
+    { id: "papaver-brilliant", item: "Papaver orientale Brilliant", cat: "Perennials", sizes: [["26", 1.013, 0.795], ["144", 0.494, 0.403]] },
+    { id: "papaver-pizzicato", item: "Papaver orientale Pizzicato Mix", cat: "Perennials", sizes: [["26", 1.202, 0.816], ["144", 0.592, 0.414]] },
+    { id: "rudbeckia-goldblitz", item: "Rudbeckia Goldblitz", cat: "Perennials", sizes: [["26", 1.569, 1.080], ["144", 0.794, 0.569]] }
   ];
   var UP = [
     { id: "aster", item: "Aster \u2014 flagged as suspect above", cat: "Annuals", sizes: [["288", 0.159, 0.248], ["512", 0.081, 0.116]] },
-    { id: "gloxinia-avanti", item: "Gloxinia Avanti Mix", cat: "Annuals", sizes: [["26", 1.126, 1.370], ["144", 0.572, 0.694]] },
-    { id: "pepper-trinidad", item: "Pepper Trinidad Scorpion", cat: "Vegetables", sizes: [["512", 0.144, 0.222], ["256", 0.161, 0.237], ["144", 0.442, 0.549], ["288", 0.290, 0.353]] },
-    { id: "pepper-anaheim", item: "Pepper Anaheim", cat: "Vegetables", sizes: [["144", 0.336, 0.457], ["512", 0.107, 0.139], ["256", 0.123, 0.157], ["288", 0.188, 0.230]] },
-    { id: "strawberry-summer-breeze", item: "Strawberry Summer Breeze", cat: "Vegetables", sizes: [["288", 0.560, 0.750], ["144", 0.842, 1.067], ["26", 1.499, 1.825]] },
-    { id: "strawberry-berries-hill", item: "Strawberry Berries Hill", cat: "Vegetables", sizes: [["288", 0.573, 0.750], ["144", 0.864, 1.067]] },
-    { id: "pepper-cal-wonder", item: "Pepper California Wonder", cat: "Vegetables", sizes: [["144", 0.370, 0.476], ["512", 0.119, 0.144]] },
-    { id: "pepper-bhut", item: "Pepper Bhut Jolokia", cat: "Vegetables", sizes: [["144", 0.464, 0.594], ["288", 0.283, 0.349]] },
-    { id: "pepper-cayenne", item: "Pepper Cayenne Long Thin", cat: "Vegetables", sizes: [["144", 0.331, 0.425]] },
-    { id: "celosia-premium", item: "Celosia Premium Concertina / Burning Embers", cat: "Annuals", sizes: [["288 Conc.", 0.224, 0.287], ["288 B.E.", 0.326, 0.406]] },
-    { id: "rhoeo", item: "Rhoeo", cat: "Foliage", sizes: [["26", 0.900, 1.152]] },
     { id: "begonia-whopper", item: "Begonia-landscape Whopper", cat: "Annuals", sizes: [["26", 1.018, 1.297], ["144", 0.538, 0.657]] },
-    { id: "sempervivum", item: "Sempervivum Supersemp", cat: "Succulents", sizes: [["26", 1.744, 2.177]] },
+    { id: "celosia-premium", item: "Celosia Premium Concertina / Burning Embers", cat: "Annuals", sizes: [["288 Conc.", 0.224, 0.287], ["288 B.E.", 0.326, 0.406]] },
+    { id: "gloxinia-avanti", item: "Gloxinia Avanti Mix", cat: "Annuals", sizes: [["26", 1.126, 1.370], ["144", 0.572, 0.694]] },
     { id: "pentas-glitterati", item: "Pentas Glitterati", cat: "Annuals", sizes: [["144", 0.522, 0.646], ["26", 0.992, 1.212]] },
+    { id: "pepper-anaheim", item: "Pepper Anaheim", cat: "Vegetables", sizes: [["144", 0.336, 0.457], ["512", 0.107, 0.139], ["256", 0.123, 0.157], ["288", 0.188, 0.230]] },
+    { id: "pepper-bhut", item: "Pepper Bhut Jolokia", cat: "Vegetables", sizes: [["144", 0.464, 0.594], ["288", 0.283, 0.349]] },
+    { id: "pepper-cal-wonder", item: "Pepper California Wonder", cat: "Vegetables", sizes: [["144", 0.370, 0.476], ["512", 0.119, 0.144]] },
+    { id: "pepper-cayenne", item: "Pepper Cayenne Long Thin", cat: "Vegetables", sizes: [["144", 0.331, 0.425]] },
+    { id: "pepper-trinidad", item: "Pepper Trinidad Scorpion", cat: "Vegetables", sizes: [["512", 0.144, 0.222], ["256", 0.161, 0.237], ["144", 0.442, 0.549], ["288", 0.290, 0.353]] },
+    { id: "strawberry-berries-hill", item: "Strawberry Berries Hill", cat: "Vegetables", sizes: [["288", 0.573, 0.750], ["144", 0.864, 1.067]] },
+    { id: "strawberry-summer-breeze", item: "Strawberry Summer Breeze", cat: "Vegetables", sizes: [["288", 0.560, 0.750], ["144", 0.842, 1.067], ["26", 1.499, 1.825]] },
+    { id: "ficus", item: "Ficus", cat: "Foliage", sizes: [["26", 1.667, 2.043]] },
+    { id: "rhoeo", item: "Rhoeo", cat: "Foliage", sizes: [["26", 0.900, 1.152]] },
     { id: "vinca-minor", item: "Vinca minor", cat: "Foliage", sizes: [["51", 0.770, 0.949], ["144", 0.630, 0.771]] },
-    { id: "ficus", item: "Ficus", cat: "Foliage", sizes: [["26", 1.667, 2.043]] }
+    { id: "sempervivum", item: "Sempervivum Supersemp", cat: "Succulents", sizes: [["26", 1.744, 2.177]] }
   ];
 
   function pct(a, b) { return Math.round((b / a - 1) * 100); }
