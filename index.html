@@ -65,27 +65,33 @@
     padding: 0; overflow: hidden; margin-bottom: 22px; position: relative;
   }
   .card-head {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
     padding: 16px 20px; border-bottom: 1px solid var(--separator);
     background: var(--card2);
   }
-  .card-head h2,
-  .section-head h2 {
+  .card-head h2 {
     font-size: clamp(16px, 2.2vw, 19px); font-weight: 800; letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+  .card-head .sub,
+  .section-head .sub {
+    margin: 3px 0 0;
+    font-size: 12px; font-weight: 500; line-height: 1.35;
+    color: var(--text-secondary);
   }
   .section-head {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    padding: 16px 20px;
-    background: var(--card2);
-    border: 1px solid var(--separator);
-    border-radius: 18px;
-    margin: 28px 0 14px;
+    display: flex; align-items: flex-end; justify-content: space-between; gap: 14px;
+    margin: 34px 0 16px;
+    padding: 0;
+    background: none;
+    border: none;
   }
-  .section-head:first-of-type { margin-top: 22px; }
-  .section-intro {
-    color: var(--text-secondary); font-size: 13px; line-height: 1.5;
-    margin: -6px 0 16px;
+  .section-head:first-of-type { margin-top: 28px; }
+  .section-head h2 {
+    font-size: clamp(22px, 3.2vw, 28px); font-weight: 800; letter-spacing: -0.6px;
+    line-height: 1.15; color: var(--text);
   }
+  .section-titles { min-width: 0; }
   .badge {
     font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
     padding: 4px 10px; border-radius: 999px; white-space: nowrap;
@@ -350,7 +356,10 @@
 
   <div class="card">
     <div class="card-head">
-      <h2>Checks by zone</h2>
+      <div class="section-titles">
+        <h2>Zone checklist</h2>
+        <p class="sub">Finished PDFs vs source, by zone</p>
+      </div>
       <span class="badge fail">5 FAILS</span>
     </div>
     <div class="matrix-scroll">
@@ -368,7 +377,10 @@
   </div>
 
   <div class="section-head">
-    <h2>Edits needed</h2>
+    <div class="section-titles">
+      <h2>Edits needed</h2>
+      <p class="sub">Catalog follow-ups still open</p>
+    </div>
     <span class="section-count" data-count-for="edits"></span>
   </div>
   <div class="fixes" data-review-group="edits">
@@ -387,7 +399,10 @@
   </div>
 
   <div class="section-head">
-    <h2>Source data review (Excel R3)</h2>
+    <div class="section-titles">
+      <h2>Source data</h2>
+      <p class="sub">Anomalies in Excel R3</p>
+    </div>
     <span class="section-count" data-count-for="data"></span>
   </div>
   <div class="fixes" data-review-group="data">
@@ -466,7 +481,10 @@
   </div>
 
   <div class="section-head">
-    <h2>Erysimum-class suspects (single-item anomalies)</h2>
+    <div class="section-titles">
+      <h2>Odd items</h2>
+      <p class="sub">Single-variety price flags</p>
+    </div>
     <span class="section-count" data-count-for="suspects"></span>
   </div>
   <div class="fixes" data-review-group="suspects">
@@ -520,11 +538,17 @@
   </div>
 
   <div class="section-head">
-    <h2>2026 &rarr; 2027 year-over-year</h2>
+    <div class="section-titles">
+      <h2>Year over year</h2>
+      <p class="sub">2026 compared with 2027</p>
+    </div>
   </div>
   <div class="card">
     <div class="card-head">
-      <h2>Median price change by zone</h2>
+      <div class="section-titles">
+        <h2>By zone</h2>
+        <p class="sub">Median price change, items &amp; combos</p>
+      </div>
       <span class="badge warn">ZONE E STANDS OUT</span>
     </div>
     <table class="data-table">
@@ -539,7 +563,10 @@
 
   <div class="card">
     <div class="card-head">
-      <h2>Biggest price cuts (Zone 2, exact name+size matches)</h2>
+      <div class="section-titles">
+        <h2>Biggest cuts</h2>
+        <p class="sub">Zone 2, exact name + size matches</p>
+      </div>
       <span class="section-count" id="yoyCountDown"></span>
     </div>
     <div class="yoy-head"><span>Item</span><span>By size &mdash; 2026 &rarr; 2027</span><span style="text-align:right">Change</span><span style="text-align:right">Verdict</span></div>
@@ -549,7 +576,10 @@
 
   <div class="card">
     <div class="card-head">
-      <h2>Biggest price increases (Zone 2, exact name+size matches)</h2>
+      <div class="section-titles">
+        <h2>Biggest increases</h2>
+        <p class="sub">Zone 2, exact name + size matches</p>
+      </div>
       <span class="section-count" id="yoyCountUp"></span>
     </div>
     <div class="yoy-head"><span>Item</span><span>By size &mdash; 2026 &rarr; 2027</span><span style="text-align:right">Change</span><span style="text-align:right">Verdict</span></div>
@@ -559,7 +589,10 @@
 
   <div class="card">
     <div class="card-head">
-      <h2>Data checks that passed</h2>
+      <div class="section-titles">
+        <h2>Passed checks</h2>
+        <p class="sub">Internal consistency that came back clean</p>
+      </div>
       <span class="badge pass">CLEAN</span>
     </div>
     <table class="data-table">
@@ -588,7 +621,10 @@
 
   <div class="card">
     <div class="card-head">
-      <h2>Freight vs ws 2027.pdf</h2>
+      <div class="section-titles">
+        <h2>Freight</h2>
+        <p class="sub">Catalog rates vs ws 2027 sheet</p>
+      </div>
     </div>
     <table class="data-table">
       <thead><tr><th>Zone</th><th>2027 &mdash; 1 / 2 / 3 boxes</th><th>2026 &mdash; 1 / 2 / 3 boxes</th><th>Boxes</th><th>Rack discounts</th></tr></thead>
@@ -610,7 +646,10 @@
 
   <div class="card">
     <div class="card-head">
-      <h2>Combo accessories by zone</h2>
+      <div class="section-titles">
+        <h2>Accessories</h2>
+        <p class="sub">Combo pots, bowls &amp; hangers by zone</p>
+      </div>
       <span class="badge pass">= 2026</span>
     </div>
     <table class="data-table">
@@ -633,7 +672,10 @@
 
   <div class="card">
     <div class="card-head">
-      <h2>Zone 2 &amp; Zone A deep proof</h2>
+      <div class="section-titles">
+        <h2>Deep proof</h2>
+        <p class="sub">Zones 2 and A, page by page</p>
+      </div>
       <span class="badge pass">PASS</span>
     </div>
     <table class="data-table">
@@ -651,9 +693,11 @@
   </div>
 
   <div class="section-head">
-    <h2>How this proof was run</h2>
+    <div class="section-titles">
+      <h2>Methodology</h2>
+      <p class="sub">What was measured, and what it surfaced</p>
+    </div>
   </div>
-  <p class="section-intro">Every check behind the findings above &mdash; what was measured, against what, and what it surfaced. Red / amber / green dots mark whether the check produced a finding on this dashboard.</p>
   <div class="method-grid">
 
     <div class="method-card pdf">
