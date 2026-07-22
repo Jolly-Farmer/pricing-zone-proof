@@ -1257,7 +1257,10 @@
       return card.classList.contains("okfix");
     }
     function isResolved(card) {
-      return isDesignedResolved(card) || state[card.dataset.reviewId] === "ok";
+      var v = state[card.dataset.reviewId];
+      if (v === "fix") return false; // reopened — back to main grid
+      if (v === "ok") return true;
+      return isDesignedResolved(card);
     }
 
     function wrapFold(card) {
@@ -1342,7 +1345,7 @@
         btnFix.classList.toggle("on", v === "fix");
         btnOk.classList.toggle("on", v === "ok" || (isDesignedResolved(card) && !v));
         card.classList.toggle("reviewed-fix", v === "fix");
-        card.classList.toggle("reviewed-ok", v === "ok" || isDesignedResolved(card));
+        card.classList.toggle("reviewed-ok", isResolved(card));
         placeCard(card);
         syncDrawer();
         updateCount();
