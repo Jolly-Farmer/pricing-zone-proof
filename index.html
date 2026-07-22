@@ -920,6 +920,8 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     flex-direction: column;
     gap: 4px;
     min-width: 0;
+    padding-left: 14px;
+    border-left: 1px solid var(--separator);
   }
   .yoy-review-bar {
     display: flex;
@@ -1005,7 +1007,13 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
     .yoy-row > .yoy-item { grid-area: item; }
     .yoy-row > .yoy-chips { grid-area: chips; }
     .yoy-row > .yoy-pct { grid-area: pct; }
-    .yoy-row > .yoy-review { grid-area: review; }
+    .yoy-row > .yoy-review {
+      grid-area: review;
+      padding-left: 0;
+      border-left: none;
+      padding-top: 8px;
+      border-top: 1px solid var(--separator);
+    }
     .yoy-review-bar { flex-wrap: wrap; }
   }
 
