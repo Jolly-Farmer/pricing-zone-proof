@@ -1183,14 +1183,6 @@
     }
     return "hsl(" + h.toFixed(1) + ", " + s.toFixed(0) + "%, " + l.toFixed(0) + "%)";
   }
-  function heatSoft(p, dir) {
-    var abs = Math.abs(p);
-    var t = Math.min(1, abs / (dir === "up" ? 55 : 35));
-    if (dir === "up") {
-      return "hsla(" + (48 - t * 46).toFixed(1) + ", 90%, 55%, " + (0.12 + t * 0.22).toFixed(2) + ")";
-    }
-    return "hsla(" + (8 - t * 8).toFixed(1) + ", 90%, 55%, " + (0.10 + t * 0.22).toFixed(2) + ")";
-  }
   function barGradient(p, dir) {
     var abs = Math.abs(p);
     var t = Math.min(1, abs / (dir === "up" ? 55 : 35));
@@ -1240,8 +1232,6 @@
         var p = pct(s[1], s[2]);
         var chip = document.createElement("span");
         chip.className = "yoy-chip";
-        chip.style.background = heatSoft(p, dir);
-        chip.style.borderColor = "transparent";
         chip.innerHTML =
           '<span class="sz">' + s[0] + "</span>" +
           '<span class="from">' + money(s[1]) + "</span>" +
