@@ -420,7 +420,7 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
 
   /* ===== Review controls ===== */
   .review-bar {
-    display: flex; gap: 6px; margin-top: 12px; padding-top: 12px;
+    display: flex; gap: 6px; margin-top: 14px; padding-top: 12px;
     border-top: 1px solid var(--separator); align-items: center; flex-wrap: wrap;
   }
   .review-btn {
@@ -435,83 +435,110 @@ html.dark .zonetag.z-liners { color: #dfa2ff; }
   .fix.reviewed-ok { border-top-color: var(--pass); }
   .fix.reviewed-fix { border-top-color: var(--fail); }
 
+  .review-author {
+    margin-left: auto;
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--text-secondary);
+    font-size: 11px; font-weight: 650;
+  }
+  .review-author label { white-space: nowrap; }
+  .review-author select {
+    font: inherit; font-size: 12px; font-weight: 700;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    padding: 4px 2px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%238a8a8e' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 2px center;
+    padding-right: 16px;
+  }
+  html.dark .review-author select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2398989e' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+  }
+  .review-author select:focus { outline: none; }
+
   .card-comments {
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-  }
-  .comment-composer {
-    display: grid;
-    grid-template-columns: minmax(96px, 120px) 1fr auto;
     gap: 6px;
-    align-items: start;
-  }
-  @media (max-width: 560px) {
-    .comment-composer { grid-template-columns: 1fr; }
-  }
-  .comment-composer select,
-  .comment-composer textarea,
-  .comment-composer button {
-    font: inherit;
-  }
-  .comment-composer select {
-    font-size: 12px; font-weight: 650;
-    padding: 7px 10px; border-radius: 10px;
-    border: 1px solid var(--separator);
-    background: var(--card2); color: var(--text);
-  }
-  .comment-composer textarea {
-    font-size: 13px; line-height: 1.4;
-    min-height: 38px; max-height: 120px;
-    padding: 8px 10px; border-radius: 10px;
-    border: 1px solid var(--separator);
-    background: var(--card2); color: var(--text);
-    resize: vertical;
-  }
-  .comment-composer textarea:focus,
-  .comment-composer select:focus {
-    outline: none;
-    border-color: var(--text-secondary);
-  }
-  .comment-composer .add-comment {
-    font-size: 12px; font-weight: 700;
-    padding: 7px 12px; border-radius: 10px;
-    border: 1px solid var(--separator);
-    background: transparent; color: var(--text-secondary);
-    cursor: pointer; white-space: nowrap;
-  }
-  .comment-composer .add-comment:hover {
-    border-color: var(--text-secondary); color: var(--text);
   }
   .comment-list {
-    display: flex; flex-direction: column; gap: 6px;
+    display: flex; flex-direction: column; gap: 2px;
   }
   .comment-list:empty { display: none; }
   .comment-item {
-    display: grid;
-    grid-template-columns: 1fr auto;
+    display: flex;
     gap: 8px;
-    align-items: start;
-    padding: 8px 10px;
-    border-radius: 10px;
-    background: var(--card2);
-    border: 1px solid var(--separator);
+    align-items: baseline;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--separator);
   }
+  .comment-item:last-child { border-bottom: none; }
   .comment-item .who {
-    font-size: 11px; font-weight: 800; letter-spacing: 0.2px;
-    color: var(--text); margin-bottom: 2px;
+    flex: 0 0 auto;
+    min-width: 3.6em;
+    font-size: 12px; font-weight: 750;
+    color: var(--text);
   }
   .comment-item .body {
-    font-size: 13px; line-height: 1.4; color: var(--text-secondary);
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 13px; line-height: 1.35;
+    color: var(--text-secondary);
     white-space: pre-wrap; word-break: break-word;
   }
   .comment-item .remove-comment {
-    font: inherit; font-size: 11px; font-weight: 700;
-    color: var(--text-secondary); background: transparent;
-    border: none; cursor: pointer; padding: 2px 4px;
+    flex: 0 0 auto;
+    font: inherit; font-size: 15px; line-height: 1;
+    color: var(--text-secondary);
+    background: transparent; border: none;
+    cursor: pointer; padding: 0 2px;
+    opacity: 0.35;
   }
-  .comment-item .remove-comment:hover { color: var(--fail); }
+  .comment-item:hover .remove-comment { opacity: 0.8; }
+  .comment-item .remove-comment:hover { color: var(--fail); opacity: 1; }
+
+  .comment-composer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0 0;
+  }
+  .comment-composer input {
+    flex: 1 1 auto;
+    min-width: 0;
+    font: inherit; font-size: 13px;
+    color: var(--text);
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--separator);
+    border-radius: 0;
+    padding: 6px 0;
+  }
+  .comment-composer input::placeholder { color: var(--text-secondary); opacity: 0.85; }
+  .comment-composer input:focus {
+    outline: none;
+    border-bottom-color: var(--text-secondary);
+  }
+  .comment-composer .add-comment {
+    flex: 0 0 auto;
+    font: inherit; font-size: 12px; font-weight: 700;
+    color: var(--accent);
+    background: transparent; border: none;
+    cursor: pointer; padding: 6px 2px;
+  }
+  .comment-composer .add-comment:hover { opacity: 0.75; }
+  .comment-composer .add-comment:disabled {
+    color: var(--text-secondary); opacity: 0.45; cursor: default;
+  }
+  @media (max-width: 480px) {
+    .review-author { margin-left: 0; width: 100%; }
+  }
 
   .resolved-drawer {
     margin: -6px 0 28px;
@@ -1783,14 +1810,6 @@ window.JF_PROOF_SYNC = (function () {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60);
   }
 
-  function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
-  }
-
   function readEntry(id) {
     var cur = state[id];
     if (!cur) return { verdict: null, comments: [] };
@@ -1929,14 +1948,10 @@ window.JF_PROOF_SYNC = (function () {
       var btnOk = document.createElement("button");
       btnOk.className = "review-btn okasis";
       btnOk.textContent = "OK as-is";
-      bar.appendChild(btnFix);
-      bar.appendChild(btnOk);
-      card.appendChild(bar);
-
-      var comments = document.createElement("div");
-      comments.className = "card-comments";
-      var composer = document.createElement("div");
-      composer.className = "comment-composer";
+      var authorWrap = document.createElement("div");
+      authorWrap.className = "review-author";
+      var authorLabel = document.createElement("span");
+      authorLabel.textContent = "As";
       var authorSel = document.createElement("select");
       authorSel.setAttribute("aria-label", "Comment author");
       AUTHORS.forEach(function (name) {
@@ -1949,18 +1964,29 @@ window.JF_PROOF_SYNC = (function () {
       authorSel.addEventListener("change", function () {
         rememberAuthor(authorSel.value);
       });
-      var input = document.createElement("textarea");
-      input.rows = 1;
-      input.placeholder = "Add a comment…";
+      authorWrap.appendChild(authorLabel);
+      authorWrap.appendChild(authorSel);
+      bar.appendChild(btnFix);
+      bar.appendChild(btnOk);
+      bar.appendChild(authorWrap);
+      card.appendChild(bar);
+
+      var comments = document.createElement("div");
+      comments.className = "card-comments";
+      var list = document.createElement("div");
+      list.className = "comment-list";
+      var composer = document.createElement("div");
+      composer.className = "comment-composer";
+      var input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Add a note…";
+      input.setAttribute("aria-label", "Comment");
       var addBtn = document.createElement("button");
       addBtn.type = "button";
       addBtn.className = "add-comment";
-      addBtn.textContent = "Comment";
-      composer.appendChild(authorSel);
+      addBtn.textContent = "Post";
       composer.appendChild(input);
       composer.appendChild(addBtn);
-      var list = document.createElement("div");
-      list.className = "comment-list";
       comments.appendChild(list);
       comments.appendChild(composer);
       card.appendChild(comments);
@@ -1971,22 +1997,25 @@ window.JF_PROOF_SYNC = (function () {
         entry.comments.forEach(function (c, idx) {
           var item = document.createElement("div");
           item.className = "comment-item";
-          var main = document.createElement("div");
-          main.innerHTML =
-            '<div class="who">' + escapeHtml(c.by || "Unknown") + "</div>" +
-            '<div class="body">' + escapeHtml(c.text || "") + "</div>";
+          var who = document.createElement("div");
+          who.className = "who";
+          who.textContent = c.by || "Unknown";
+          var body = document.createElement("div");
+          body.className = "body";
+          body.textContent = c.text || "";
           var remove = document.createElement("button");
           remove.type = "button";
           remove.className = "remove-comment";
           remove.setAttribute("aria-label", "Remove comment");
-          remove.textContent = "Remove";
+          remove.textContent = "\u00d7";
           remove.addEventListener("click", function () {
             var next = readEntry(id);
             next.comments.splice(idx, 1);
             writeEntry(id, next);
             render();
           });
-          item.appendChild(main);
+          item.appendChild(who);
+          item.appendChild(body);
           item.appendChild(remove);
           list.appendChild(item);
         });
@@ -2025,12 +2054,13 @@ window.JF_PROOF_SYNC = (function () {
         writeEntry(id, entry);
         input.value = "";
         render();
+        input.focus();
       }
       btnFix.addEventListener("click", function () { set("fix"); });
       btnOk.addEventListener("click", function () { set("ok"); });
       addBtn.addEventListener("click", addComment);
       input.addEventListener("keydown", function (e) {
-        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        if (e.key === "Enter") {
           e.preventDefault();
           addComment();
         }
